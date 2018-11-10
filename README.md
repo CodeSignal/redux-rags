@@ -18,7 +18,7 @@ Huge thanks to Jimmy Shen for [this amazing Medium article](https://medium.com/@
 on dynamically injecting reducers into the redux store.
 
 ## Usage
-### using the RagFactory: Basic Data Request
+### Using the `ragFactory`: Basic Data Request
 Here's how you'd interact with redux for a data request. The returned `load` function will take the same arguments as the `fetchData` function.
 ```js
 import { ragFactory } from 'redux-rags';
@@ -26,7 +26,7 @@ import { ragFactory } from 'redux-rags';
 const fetchData = () => axios.get('/faq')
 
 const { actions: { load }, getters: { getData, getIsLoading } } =
-  ragFactory({ fetchData: Function });
+  ragFactory({ fetchData });
 
 export {
   loadFaq: load,
