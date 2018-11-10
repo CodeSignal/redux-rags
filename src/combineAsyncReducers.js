@@ -1,6 +1,6 @@
 // @flow
 
-const recursivelyCombineAsyncReducers(combineReducers: Function, asyncReducers: Function | Object) {
+const recursivelyCombineAsyncReducers = (combineReducers: Function, asyncReducers: Function | Object) => {
     // Don't combine a reducer leaf
     if (typeof asyncReducers !== 'object') {
         return asyncReducers;
@@ -17,7 +17,7 @@ const recursivelyCombineAsyncReducers(combineReducers: Function, asyncReducers: 
     }
 
     return combineReducers(reducers);
-}
+};
 
 const combineAsyncReducers = (combineReducers: Function, asyncReducers: Function | Object) => {
     const newAsyncReducers = Object.getOwnPropertyNames(asyncReducers).reduce(
@@ -27,6 +27,6 @@ const combineAsyncReducers = (combineReducers: Function, asyncReducers: Function
         }
         , {});
     return newAsyncReducers;
-}
+};
 
 export default combineAsyncReducers;

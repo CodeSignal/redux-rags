@@ -68,6 +68,17 @@ const { actions, subreducer, get, getData, getMeta } = generator({
 type Reducer<T> = (state?: BoilerState<T>, action: *) => BoilerState<T>;
 type PartialReducer<T> = (state: BoilerState<T>, action: *) => BoilerState<T>;
 
+type ConfigType<T, G> = {
+  name?: string,
+  fetchData?: (...args: G) => T | Promise<T>,
+  partialReducer?: PartialReducer<T>,
+  update?: (data: ?T, *) => ?T | Promise<?T>,
+  getInStore?: (store: Object) => BoilerState<T>,
+  getInitialState?: () => T,
+  // Options
+  loadOnlyOnce?: ?boolean,
+};
+
 type ReturnType<T, G: Array<mixed>> = {
   actions: * & {
     reset: () => *,
@@ -91,19 +102,19 @@ type ReturnType<T, G: Array<mixed>> = {
 };
 
 let generatedCount = 0;
-const prefix = '@@factory';
+const prefix = '@@redux-rags';
 type LoadingEnum = 'loading';
 type EndLoadingEnum = 'endLoading';
 type ErrorsEnum = 'errors';
 type UpdateEnum = 'update';
 type ResetEnum = 'reset';
 const getLoadingType = (name): LoadingEnum =>
-  (`${prefix}/${name}_BEGIN_LOADING_${generatedCount}`: any);
+  (`${prefix}/${generatedCount}/${name}: begin loading`: any);
 const getEndLoadingType = (name): EndLoadingEnum =>
-  (`${prefix}/${name}_END_LOADING_${generatedCount}`: any);
-const getErrorsType = (name): ErrorsEnum => (`${prefix}/${name}_ERRORS_${generatedCount}`: any);
-const getUpdateType = (name): UpdateEnum => (`${prefix}/${name}_UPDATE_${generatedCount}`: any);
-const getResetType = (name): ResetEnum => (`${prefix}/${name}_RESET_${generatedCount}`: any);
+  (`${prefix}/${generatedCount}/${name}: end loading`: any);
+const getErrorsType = (name): ErrorsEnum => (`${prefix}/${generatedCount}/${name}: errors`: any);
+const getUpdateType = (name): UpdateEnum => (`${prefix}/${generatedCount}/${name}: update`: any);
+const getResetType = (name): ResetEnum => (`${prefix}/${generatedCount}/${name}: reset`: any);
 
 export const createGetInitialState = (getInitialState: *) => (): BoilerState<any> => ({
   data: typeof getInitialState === 'function' ? getInitialState() : null,
@@ -116,16 +127,7 @@ export const createGetInitialState = (getInitialState: *) => (): BoilerState<any
   },
 });
 
-const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: {
-  name?: string,
-  fetchData?: (...args: G) => T | Promise<T>,
-  partialReducer?: PartialReducer<T>,
-  update?: (data: ?T, *) => ?T | Promise<?T>,
-  getInStore?: (store: Object) => BoilerState<T>,
-  getInitialState?: () => T,
-  // Options
-  loadOnlyOnce?: ?boolean,
-}): ReturnType<T, G> => {
+const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
   const {
     name = '',
     fetchData,
