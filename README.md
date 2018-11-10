@@ -1,7 +1,7 @@
 # Redux-Rags
 Redux Reducers, Actions, and Generators: Simplified!
 
-Generate reducers that manage the `begin load -> load -> endLoad -> set data || set error` lifecycle.
+Generate and automatically inject reducers that manage the `begin load -> load -> endLoad -> set data || set error` lifecycle for data fetching.
 
 TLDR: `({ fetchData }) => ({ actions: { load }, getters: { getData } })`
 
