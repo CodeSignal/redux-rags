@@ -3,40 +3,6 @@ import createFactory, { createGetInitialState, type BoilerState } from './factor
 
 export type MapState<T> = { [string]: BoilerState<T> };
 
-/** A redux-boilerplate maker for loading data by keys
- * This generator uses the other generator, and creates new reducers as necessary to store
- * new calls to the load method. You can query the meta data by the same arguments, which
- * means that you can easily prevent reloading data or viewing meta data about loads.
-
- ** Example:
- * Pass a `load` function in:
-```js
- const { action: { load }, getters: { getData, getMeta } } =
-   factory({ fetchData: Function })
-
- // Somewhere else, maybe in a component
-
- ...
- componentDidMount() {
-   const { loaded, taskId, userId } = this.props;
-   !loaded && load(userId, taskId);
- }
- ...
- mapStateToProps(state, props) {
-   const { userId, taskId } = props;
-   return {
-     loaded: getMeta(userId, taskId).loaded,
-     taskData: getData(userId, taskId)
-   }
- }
- ```
-
- * Configuration Parameters
- * @param name - String that identifies the data being stored
- * @param fetchData - An async method that loads the data, params are used as a Stringified key for the map
- * @param getInitialState - Set the default value for the fetchData function in the store. Defaults to null
- * */
-
 type ConfigType<T, G> = {
   name?: string,
   fetchData?: (...args: G) => T | Promise<T>,
