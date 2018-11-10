@@ -143,7 +143,7 @@ const store = createStore(createRootReducer(), compose(middleware));
 configureRags(store, createRootReducer);
 ```
 
-## Details and Options
+## Details and Explanations of Module Export
 
 ### A few types to consider:
 The generated subreducer uses the following type for the state:
@@ -167,6 +167,23 @@ type BoilerState<T> = {
 | lastChangeTime | The time of the last change |
 | errors | Error object from the loading function, if any |
 
+### configureRags
+Signature: `(store: Object, createRootReducer: Function) => void`.
+
+This function is how you set up the module, giving it access to your redux store. This is used to configure the reducer
+injector. We need `store` for the [`replaceReducer`](https://redux.js.org/api/store#replaceReducer) method. And we'll need to have a formatted `createRootReducer` function that accepts dynamic reducers. We've provided a `combineAsyncReducers` function to make this easier.
+
+### combineAsyncReducers
+Signature: `(combineReducers: Function, dynamicReducers: Object) => newDynamicReducers`
+
+This function is designed to recursively call the `combineReducers` function on the second parameter `dynamicReducers`. This means that whatever the structure of `dynamicReducers` we can register the functions with `redux`. The package internally will add values underneath `@@redux-rags` and `@@redux-rags/map` keys in the `dynamicReducers` object. 
+
+### injectReducer
+Signature: `(keys: Array<string>, reducer: Function) => void`
+
+This function will insert the given `reducer` at the nested key location in `dynamicReducers` specified by `keys`. For example, if the user has called `ragFactory` with the name `'user info'` internally we will call this function with `injectReducer(['@@redux-rags', 'user info'], subreducer)`. This will set values so that `dynamicReducers['@@redux-rags']['user info'] == subreducer` and update the store with the newly injected subreducer.
+
+You can call this function and inject your own subreducers. You could just use `configureRags`, `combineAsyncReducers`, and `injectReducer` to setup your store to allow for dynamic reducers and skip the rest of this module. 
 
 ### ragFactory
 
@@ -198,6 +215,7 @@ The `ragFactoryMap` builds on top of `ragFactory`. That factory is used internal
 | name | string | yes | A string that identifies the data. If you pass a name, the actions sent to redux and the automatically injected subreducer will use that name. |
 | fetchData | Function | no | A function that loads data. The returned function will have the same signature. |
 | getInitialState | Function | yes | Function to create initial data for the return of fetchData, will use null if not defined |
+
 
 ## License
 MIT
