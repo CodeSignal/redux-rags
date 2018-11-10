@@ -28,7 +28,7 @@ describe('factoryOptions', () => {
           return asyncThunk(dispatch, getState).then(() => {
             expect(dispatch).toHaveBeenCalledWith(
               expect.objectContaining({
-                type: expect.stringContaining('UPDATE'),
+                type: expect.stringContaining('update'),
                 payload: expect.objectContaining({
                   key_1: 'val_1',
                 }),
@@ -82,7 +82,7 @@ describe('factoryOptions', () => {
           return asyncThunk(dispatch, getState).then(() => {
             expect(dispatch).toHaveBeenCalledWith(
               expect.objectContaining({
-                type: expect.stringContaining('UPDATE'),
+                type: expect.stringContaining('update'),
                 payload: 5,
               })
             );
@@ -116,7 +116,7 @@ describe('factoryOptions', () => {
           return asyncThunk(dispatch, getState).then(() => {
             expect(dispatch).toHaveBeenCalledWith(
               expect.objectContaining({
-                type: expect.stringContaining('UPDATE'),
+                type: expect.stringContaining('update'),
               })
             );
           });

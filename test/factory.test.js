@@ -63,7 +63,7 @@ describe('factory-simple', () => {
       it('is a valid action', () => {
         const action = actions.beginLoading();
         expect(action).toHaveProperty('type');
-        expect(action.type).toEqual(expect.stringContaining('BEGIN_LOADING'));
+        expect(action.type).toEqual(expect.stringContaining('begin loading'));
         expect(action.type).toEqual(expect.stringContaining(name));
       });
     });
@@ -72,7 +72,7 @@ describe('factory-simple', () => {
       it('is a valid action', () => {
         const action = actions.endLoading();
         expect(action).toHaveProperty('type');
-        expect(action.type).toEqual(expect.stringContaining('END_LOADING'));
+        expect(action.type).toEqual(expect.stringContaining('end loading'));
         expect(action.type).toEqual(expect.stringContaining(name));
       });
     });
@@ -81,7 +81,7 @@ describe('factory-simple', () => {
       it('is a valid action', () => {
         const action = actions.reset();
         expect(action).toHaveProperty('type');
-        expect(action.type).toEqual(expect.stringContaining('RESET'));
+        expect(action.type).toEqual(expect.stringContaining('reset'));
         expect(action.type).toEqual(expect.stringContaining(name));
       });
     });
@@ -90,7 +90,7 @@ describe('factory-simple', () => {
       it('is a valid action', () => {
         const action = actions.errors('bad things happened');
         expect(action).toHaveProperty('type');
-        expect(action.type).toEqual(expect.stringContaining('ERROR'));
+        expect(action.type).toEqual(expect.stringContaining('error'));
         expect(action.type).toEqual(expect.stringContaining(name));
 
         expect(action).toHaveProperty('payload');
@@ -102,7 +102,7 @@ describe('factory-simple', () => {
       it('is a valid action', () => {
         const action = actions.clearErrors();
         expect(action).toHaveProperty('type');
-        expect(action.type).toEqual(expect.stringContaining('ERROR'));
+        expect(action.type).toEqual(expect.stringContaining('error'));
         expect(action.type).toEqual(expect.stringContaining(name));
 
         expect(action).toHaveProperty('payload');
@@ -114,7 +114,7 @@ describe('factory-simple', () => {
       it('is a valid action', () => {
         const action = actions.updateData('string data');
         expect(action).toHaveProperty('type');
-        expect(action.type).toEqual(expect.stringContaining('UPDATE'));
+        expect(action.type).toEqual(expect.stringContaining('update'));
         expect(action.type).toEqual(expect.stringContaining(name));
 
         expect(action).toHaveProperty('payload');
@@ -145,22 +145,22 @@ describe('factory-simple', () => {
         return asyncThunk(dispatch, getState).then(() => {
           expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
-              type: expect.stringContaining('BEGIN_LOADING'),
+              type: expect.stringContaining('begin loading'),
             })
           );
           expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
-              type: expect.stringContaining('UPDATE'),
+              type: expect.stringContaining('update'),
             })
           );
           expect(dispatch).toHaveBeenCalledWith(
             expect.objectContaining({
-              type: expect.stringContaining('END_LOADING'),
+              type: expect.stringContaining('end loading'),
             })
           );
           expect(dispatch).not.toHaveBeenCalledWith(
             expect.objectContaining({
-              type: expect.stringContaining('ERRORS'),
+              type: expect.stringContaining('errors'),
             })
           );
         });
