@@ -13,18 +13,6 @@ export type BoilerState<T> = {
 };
 
 /** A redux-boilerplate maker.
-* This generator creates a subreducer and actions, and wires them up for you.
-* TL:DR: ({ fetchData }) => ({ actions: { load }, getters: { getData } })
-
-
-** Basic Example:
-* Use `load` in `mapDispatchToProps` to have an action to call, same arguments as `fetchData`.
-* `getData` selects the data out of the redux store for you, just pass the store in.
-```js
-const { actions: { load }, getters: { getData } } =
-  makeReduxBoilerplate({ fetchData: Function })
-```
-
 
 ** Simple Example:
 * Give a descriptive name and a loading function. Get back a loading action, and a getter.

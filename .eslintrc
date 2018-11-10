@@ -116,7 +116,7 @@
       'no-useless-rename': ['warn', {
         ignoreDestructuring: false,
         ignoreImport: false,
-        ignoreExport: false,
+        ignoreExport: false
       }],
       'no-with': 'warn',
       'no-whitespace-before-property': 'warn',
@@ -130,8 +130,7 @@
       'unicode-bom': ['warn', 'never'],
       'use-isnan': 'warn',
       'valid-typeof': 'warn',
-        allowAllCaps: true,
-        ignore: [],
-      }]
+      allowAllCaps: true,
+      ignore: []
     }
   }
