@@ -6,7 +6,7 @@
 const replaceAsyncReducers = (reducers: Object, keys: Array<string>, reducer: Function) => {
     let key = keys.shift();
     if (keys.length === 0) {
-        rootReducers[key] = reducer;
+        reducers[key] = reducer;
         return;
     }
     if (reducers[key] === undefined) {
@@ -17,7 +17,7 @@ const replaceAsyncReducers = (reducers: Object, keys: Array<string>, reducer: Fu
 };
 
 const dynamicReducers = {};
-const makeReducerInjector = (store, createRootReducer) => (keys: Array<string>, reducer: *) => {
+const makeReducerInjector = (store: { replaceReducer: Function }, createRootReducer: Function) => (keys: Array<string>, reducer: *) => {
     replaceAsyncReducers(dynamicReducers, keys, reducer);
     store.replaceReducer(createRootReducer(dynamicReducers));
 };

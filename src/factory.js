@@ -182,17 +182,20 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
   class Actions {
     static beginLoading = () => ({
       type: BEGIN_LOADING,
+      payload: null,
     });
 
     static endLoading = () => ({
       type: END_LOADING,
+      payload: null,
     });
 
     static reset = () => ({
       type: RESET,
+      payload: null,
     });
 
-    static errors = (errors: *) => ({
+    static errors = (errors: Object | String) => ({
       type: ERRORS,
       payload: errors,
     });
@@ -261,7 +264,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
 
     static subreduce = (
       state?: BoilerState<T> = Getters.getInitialState(),
-      action?: GeneratedAction | * // Maybe support other action types
+      action?: GeneratedAction | * // Support other action types
     ) => {
       if (!action || typeof action !== 'object' || !action.type) {
         return state;
