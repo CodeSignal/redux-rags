@@ -16,7 +16,8 @@ Huge thanks to Jimmy Shen for [this amazing Medium article](https://medium.com/@
 on dynamically injecting reducers into the redux store.
 
 ## Usage
-Here's an example of how you'd interact with redux for a data request:
+### using the RagFactory: Basic Data Request
+Here's how you'd interact with redux for a data request. The returned `load` function will take the same arguments as the `fetchData` function.
 ```js
 import { ragFactory } from 'redux-rags';
 
@@ -31,9 +32,8 @@ export {
   getIsFaqLoading: getIsLoading
 };
 ```
-The returned `load` function will take the same arguments as the `fetchData` function.
 
-<details><summary>Unfold to see how to use that example in a react component </summary>
+#### Use that Data Request in a React Component
 
 ```js
 import React from 'react';
@@ -68,10 +68,8 @@ const mapStateFromProps = state => ({
 
 export default connect(mapStateFromProps, { loadFaq })(Faq);
 ```
-</details>
 
-<details><summary>Unfold to see an example of placing the subreducer in a custom location in redux</summary>
-
+### Placing the subreducer in a custom location in redux
 Connect subreducer to your desired location in the redux store, and tell the generator
 where you put it. Getters are also factories for you. If you don't care where the
 subreducer lives, don't pass in a `getInStore` method and the generator will place it for you.
@@ -86,10 +84,7 @@ const { actions, subreducer, get, getData, getMeta } = generator({
 });
 ```
 
-</details>
-
-<details><summary>Unfold to see an example of ragFactoryMap</summary>
-
+### Using the ragFactoryMap
 Not much to say, it's pretty much how you would use `ragFactory`, except treating the input arguments
 as a key for a different mini state machine.
 
@@ -113,7 +108,6 @@ as a key for a different mini state machine.
    }
  }
 ```
-</details>
 
 ## Pre Requisites
 You'll need `redux-thunk` and to reformate your `createRootReducer` function. We'll need to handle the addition of dynamic reducers!
@@ -143,7 +137,7 @@ const store = createStore(createRootReducer(), compose(middleware));
 configureRags(store, createRootReducer);
 ```
 
-## Details and Explanations of Module Export
+## Details and explanations of exports
 
 ### A few types to consider:
 The generated subreducer uses the following type for the state:
