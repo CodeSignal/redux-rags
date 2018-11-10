@@ -76,7 +76,7 @@ const createFactoryMap = (injectReducer: Function) => {
             getInitialState,
             getInStore: getOutOfStore,
           });
-          const subreducer = mapArgsToGenerated[stringHash].subreducer.subreduce;
+          const subreducer = mapArgsToGenerated[stringHash].subreducer;
           injectReducer(['generatedMap', safeDataName, stringHash], subreducer);
         }
         return mapArgsToGenerated[stringHash];

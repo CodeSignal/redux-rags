@@ -39,10 +39,7 @@ type ReturnType<T, G: Array<mixed>> = {
     beginLoading: () => *,
     endLoading: () => *,
   },
-  subreducer: {
-    partialReducer?: PartialReducer<T>,
-    subreduce: Reducer<T>,
-  },
+  subreducer: Reducer<T>,
   getters: * & {
     get: Object => BoilerState<T>,
     getData: Object => $PropertyType<BoilerState<T>, 'data'>,
