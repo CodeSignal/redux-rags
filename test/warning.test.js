@@ -1,5 +1,5 @@
 // @flow
-const consolespy = jest.spyOn(console, 'error');
+const consolespy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
 import warning from '../src/utils/warning';
 
