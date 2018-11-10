@@ -85,7 +85,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
   } = config;
   generatedCount += 1;
 
-  const safeDataName = `${generatedCount}/${name}`;
+  const safeDataName = `${name}/${generatedCount}`;
 
   class Getters {
     static getInitialState: () => BoilerState<T> = createGetInitialState(getInitialState);

@@ -39,7 +39,7 @@ const createFactoryMap = (injectReducer: Function) => {
       const { name = '', fetchData, getInitialState } = config;
       generatedCount += 1;
 
-      const safeDataName = `${generatedCount}/${name}`;
+      const safeDataName = `${name}/${generatedCount}`;
       const mapArgsToGenerated = {};
 
       class Getters {
