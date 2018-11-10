@@ -1,6 +1,4 @@
 // @flow
-// Inspired by: https://medium.com/@jimmy_shen/inject-reducer-arbitrarily-rather-than-top-level-for-redux-store-to-replace-reducer-fdc1060a6a7
-
 // Assumings keys came from 'path.to.reducer'.split('.'), or some equivalent nesting structure
 // Recurse in reducers until we find where this one should go.
 const replaceAsyncReducers = (reducers: Object, keys: Array<string>, reducer: Function) => {

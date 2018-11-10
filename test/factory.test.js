@@ -10,7 +10,7 @@ describe('factory-simple', () => {
   const getInStore = x => x;
   const {
     actions,
-    subreducer: { subreduce },
+    subreducer,
     getters,
   } = factory({
     name,
@@ -182,17 +182,17 @@ describe('factory-simple', () => {
     };
 
     it('returns correct initial state on no-op action', () => {
-      const state = subreduce();
+      const state = subreducer();
       expect(state).toEqual(mockState);
     });
 
     it('updates loading with begin load action', () => {
-      expect(subreduce(mockState, actions.beginLoading())).toMatchObject({
+      expect(subreducer(mockState, actions.beginLoading())).toMatchObject({
         meta: {
           loading: true,
         },
       });
-      expect(subreduce(mockStateFilled, actions.beginLoading())).toMatchObject({
+      expect(subreducer(mockStateFilled, actions.beginLoading())).toMatchObject({
         meta: {
           loading: true,
         },
@@ -200,12 +200,12 @@ describe('factory-simple', () => {
     });
 
     it('updates loading with end load action', () => {
-      expect(subreduce(mockState, actions.endLoading())).toMatchObject({
+      expect(subreducer(mockState, actions.endLoading())).toMatchObject({
         meta: {
           loading: false,
         },
       });
-      expect(subreduce(mockStateFilled, actions.endLoading())).toMatchObject({
+      expect(subreducer(mockStateFilled, actions.endLoading())).toMatchObject({
         meta: {
           loading: false,
         },
@@ -213,13 +213,13 @@ describe('factory-simple', () => {
     });
 
     it('updates errors with errors action', () => {
-      expect(subreduce(mockState, actions.errors('error value'))).toMatchObject({
+      expect(subreducer(mockState, actions.errors('error value'))).toMatchObject({
         meta: {
           errors: 'error value',
         },
       });
 
-      expect(subreduce(mockStateFilled, actions.errors('error value'))).toMatchObject({
+      expect(subreducer(mockStateFilled, actions.errors('error value'))).toMatchObject({
         meta: {
           errors: 'error value',
         },
@@ -227,13 +227,13 @@ describe('factory-simple', () => {
     });
 
     it('clears errors with clearErrors action', () => {
-      expect(subreduce(mockState, actions.clearErrors())).toMatchObject({
+      expect(subreducer(mockState, actions.clearErrors())).toMatchObject({
         meta: {
           errors: null,
         },
       });
 
-      expect(subreduce(mockStateFilled, actions.clearErrors())).toMatchObject({
+      expect(subreducer(mockStateFilled, actions.clearErrors())).toMatchObject({
         meta: {
           errors: null,
         },
@@ -242,13 +242,13 @@ describe('factory-simple', () => {
 
     it('resets state on reset action', () => {
       const initialState = getters.getInitialState();
-      expect(subreduce(mockState, actions.reset())).toMatchObject(initialState);
+      expect(subreducer(mockState, actions.reset())).toMatchObject(initialState);
 
-      expect(subreduce(mockStateFilled, actions.reset())).toMatchObject(initialState);
+      expect(subreducer(mockStateFilled, actions.reset())).toMatchObject(initialState);
     });
 
     it('updates data field with update action', () => {
-      expect(subreduce(mockState, actions.updateData(10))).toMatchObject({
+      expect(subreducer(mockState, actions.updateData(10))).toMatchObject({
         data: 10,
         meta: {
           loaded: true,

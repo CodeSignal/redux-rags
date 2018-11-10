@@ -59,7 +59,7 @@ describe('factoryOptions', () => {
     const getInStore = x => x;
     const {
       actions,
-      subreducer: { subreduce },
+      subreducer,
       getters,
     } = factory({
       name,
@@ -110,7 +110,7 @@ describe('factoryOptions', () => {
           state.data = 0;
           state.meta.loaded = true;
 
-          const stateAfterLoadAndReset = subreduce(state, actions.reset());
+          const stateAfterLoadAndReset = subreducer(state, actions.reset());
           const getState = jest.fn().mockReturnValue(stateAfterLoadAndReset);
 
           return asyncThunk(dispatch, getState).then(() => {
@@ -142,7 +142,7 @@ describe('factoryOptions', () => {
       };
 
       const {
-        subreducer: { subreduce },
+        subreducer,
         getters,
       } = factory({
         name,
@@ -156,55 +156,7 @@ describe('factoryOptions', () => {
         const state = getters.getInitialState();
         state.data = 'Fancy Data';
 
-        expect(subreduce(state, { type: 'LOGOUT' })).toMatchObject({
-          data: null,
-        });
-      });
-    });
-
-    describe('adding in later', () => {
-      const load = jest.fn().mockReturnValue(5);
-      const name = 'PARTIAL_REDUCER_TEST';
-
-      const getInStore = x => x;
-
-      const { subreducer, getters } = factory({
-        name,
-        fetchData: load,
-        getInStore,
-        loadOnlyOnce: true,
-        getInitialState: load,
-      });
-      const subreduce = subreducer.subreduce;
-
-      it('does not respond to logout without partial reducer', () => {
-        const state = getters.getInitialState();
-
-        expect(state).toMatchObject({
-          data: 5,
-        });
-        expect(subreduce(state, { type: 'LOGOUT' })).toMatchObject({
-          data: 5,
-        });
-      });
-
-      it('responds to logout when partialReducer is assigned', () => {
-        const partialReducer = (state: *, action) => {
-          if (action.type === 'LOGOUT') {
-            return {
-              ...state,
-              data: null,
-            };
-          }
-          return state;
-        };
-
-        const state = getters.getInitialState();
-        expect(state).toMatchObject({
-          data: 5,
-        });
-        subreducer.partialReducer = partialReducer;
-        expect(subreduce(state, { type: 'LOGOUT' })).toMatchObject({
+        expect(subreducer(state, { type: 'LOGOUT' })).toMatchObject({
           data: null,
         });
       });
