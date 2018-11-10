@@ -85,7 +85,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
   } = config;
   generatedCount += 1;
 
-  const safeDataName = `${geleratedCount}/${name}`;
+  const safeDataName = `${generatedCount}/${name}`;
 
   class Getters {
     static getInitialState: () => BoilerState<T> = createGetInitialState(getInitialState);
@@ -93,7 +93,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     static get =
       getInStore ||
       ((reduxStore: Object): BoilerState<T> =>
-        reduxStore.generated[safeDataName] || Getters.getInitialState());
+        reduxStore[prefix][safeDataName] || Getters.getInitialState());
 
     static getData = (reduxStore: Object): $PropertyType<BoilerState<T>, 'data'> => {
       const state = Getters.get(reduxStore);

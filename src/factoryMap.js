@@ -39,14 +39,14 @@ const createFactoryMap = (injectReducer: Function) => {
       const { name = '', fetchData, getInitialState } = config;
       generatedCount += 1;
 
-      const safeDataName = `${name}_${generatedCount}`;
+      const safeDataName = `${generatedCount}/${name}`;
       const mapArgsToGenerated = {};
 
       class Getters {
         static _getInitialStateForKey: () => BoilerState<T> = createGetInitialState(getInitialState);
 
         static get = (reduxStore: Object): MapState<T> =>
-          reduxStore.generatedMap && reduxStore.generatedMap[safeDataName];
+          reduxStore[prefix] && reduxStore[prefix][safeDataName];
 
         static getWithArgs = (reduxStore, ...args) => {
           const argsKey = convertArgsToString(...args);
