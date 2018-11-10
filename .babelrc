@@ -1,4 +1,4 @@
 {
-    "presets": ["es2015", "flow"],
-    "plugins": ["babel-plugin-transform-runtime", "transform-class-properties"]
+    "presets": ["env", "es2015", "flow", "stage-3"],
+    "plugins": ["babel-plugin-transform-runtime", "babel-plugin-transform-class-properties"]
 }

@@ -1,3 +1,7 @@
 src
+LICENSE
 CODE_OF_CONDUCT.md
 .babelrc
+.eslintrc
+.flowconfig
+flow-typed

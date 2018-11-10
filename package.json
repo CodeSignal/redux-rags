@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ksaxberg/redux-rags.git"
+    "url": "git+https://github.com/CodeSignal/redux-rags.git"
   },
   "jest": {
     "testMatch": [
@@ -34,12 +34,12 @@
   "keywords": [
     "redux"
   ],
-  "author": "Kyle Saxberg",
+  "author": "CodeSignal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ksaxberg/redux-rags/issues"
+    "url": "https://github.com/CodeSignal/redux-rags/issues"
   },
-  "homepage": "https://github.com/ksaxberg/redux-rags#readme",
+  "homepage": "https://github.com/CodeSignal/redux-rags#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
