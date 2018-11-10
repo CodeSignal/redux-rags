@@ -1,6 +1,8 @@
 # Redux-Rags
 Redux Reducers, Actions, and Generators: Simplified!
 
+Generate reducers that manage the `begin load -> load -> endLoad -> set data || set error` lifecycle.
+
 TLDR: `({ fetchData }) => ({ actions: { load }, getters: { getData } })`
 
 ## Motivation
@@ -34,7 +36,7 @@ export {
 ```
 
 #### Use that Data Request in a React Component
-
+Import the Getters and Action as you normally would and use them with `react-redux`.
 ```js
 import React from 'react';
 import { connect } from 'react-redux';
@@ -136,6 +138,25 @@ const middleware = applyMiddleware(thunk);
 const store = createStore(createRootReducer(), compose(middleware));
 configureRags(store, createRootReducer);
 ```
+
+## What Actions and Getters are there?
+Getters take in the full store as the argument. For `ragFactory`, you'll have access to the following getters:
+
+- `get`: Returns `BoilerState<T>`, so an object that looks like `{ data, meta }`.
+- `getData`: Returns the `data` attribute from `BoilerState<T>`. It would be type `?T`, whatever your fetchData / update functions passed to the `ragFactory` return.
+- `getMeta`: Returns the `meta` attribute from `BoilerState<T>`. This will be an object that looks like `{ loading, lastLoadTime, errors }`, with a few more properties. Look for the types / additional properties in the type definition.
+- `getIsLoading`: Returns the `loading` attribute from the `meta` field. A common use case is for quick access to the loading state, so a special getter is provided for this meta attribute.
+
+Actions are implementations of commonly used features to manipulate the state. Most of these are action creators, with `load` and `update` being thunks.
+
+- `beginLoading`: Sets `loading` meta property to true.
+- `endLoading`: Sets `loading` meta property to false.
+- `reset`: Returns the subreducer to the initial state.
+- `errors`: Sets the errors meta value.
+- `clearErrors`: Clears the errors meta value.
+- `updateData`: Sets the data value for the subreducer.
+- `update`: Thunk. Calls the `update` function passed in to `ragsFactory` and sets the data value to the result. Might also set the error attribute if the `update` function throws an error.
+- `load`: Thunk. Calls the appropriate sequence of `beginLoading`, `updateData`, `endLoading` actions while calling the `fetchData` function passed to `ragsFactory`. If there are errors while executing, the error meta value will be set.
 
 ## Details and explanations of exports
 
