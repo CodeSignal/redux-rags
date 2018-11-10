@@ -172,12 +172,15 @@ type BoilerState<T> = {
 |  Props  |  Type  |  Optional  |  Description  |
 |:-------:|:------:|:----------:|:-------------:|
 | name | string | yes | A string that identifies the data. If you pass a name, the actions sent to redux and the automatically injected subreducer will use that name. |
-| fetchData | Function | no | A function that loads data |
+| fetchData | Function | yes | A function that loads data |
 | getInitialState | Function | yes | Function to create initial data for the return of fetchData, will use null if not defined |
 | getInStore | Function | yes | ``(state) => state.some.path.to.subreducer` Function to locate the subreducer in the store. Will place in default location if not specified, otherwise will use this location in getters. |
 | update | Function | yes | (dataValue, ...args) => { return newData; } A function to manipulate the data attribute. Returned `update` will have signature `(...args) => void` |
 | loadOnlyOnce | boolean | yes | Prevent the `load` function from being called more than once. |
 | partialReducer | Function | yes | Allows you to hook in to other actions in the redux store and modify the state. You'll be working with the BoilerState argument. Extend the reducer and listen to other actions, for example you can could clear the data on user logout. Write this like a reducer to extend the functionality of the generated boilerplate. You can also delay assignment if you want to utilize actions in the returned Actions object, just assign the function to `subreducer.partialReducer`.|
+
+Thoguh both `fetchData` and `update` are optional, you pass at least one. With neither of these, there is no good way to
+update the data or metadata fields.
 
 The `ragFactory` will place the dynamically added subreducers in the `@@redux-rags` top leve of the redux store.
 If you want to place this somewhere else, just put the returned `subreducer` somewhere in your redux store and
