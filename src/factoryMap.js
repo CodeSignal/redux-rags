@@ -27,6 +27,8 @@ type ReturnType<T, G: Array<mixed>> = {
   },
 };
 
+const prefix = '@@redux-rags/map';
+
 let generatedCount = 0;
 
 const convertArgsToString = (...args) => JSON.stringify(args);
@@ -77,7 +79,7 @@ const createFactoryMap = (injectReducer: Function) => {
             getInStore: getOutOfStore,
           });
           const subreducer = mapArgsToGenerated[stringHash].subreducer;
-          injectReducer(['generatedMap', safeDataName, stringHash], subreducer);
+          injectReducer([prefix, safeDataName, stringHash], subreducer);
         }
         return mapArgsToGenerated[stringHash];
       };
