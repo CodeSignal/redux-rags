@@ -5,7 +5,7 @@ export type MapState<T> = { [string]: BoilerState<T> };
 
 type ConfigType<T, G> = {
   name?: string,
-  fetchData?: (...args: G) => T | Promise<T>,
+  load?: (...args: G) => T | Promise<T>,
   getInitialState?: () => T,
 };
 
@@ -36,7 +36,7 @@ const convertArgsToString = (...args) => JSON.stringify(args);
 const createFactoryMap = (injectReducer: Function) => {
     const factory = createFactory(injectReducer);
     return <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
-      const { name = '', fetchData, getInitialState } = config;
+      const { name = '', load, getInitialState } = config;
       generatedCount += 1;
 
       const safeDataName = `${name}/${generatedCount}`;
@@ -74,7 +74,7 @@ const createFactoryMap = (injectReducer: Function) => {
           const getOutOfStore: any = store => Getters.getWithArgs(store, ...args);
           mapArgsToGenerated[stringHash] = factory({
             name: safeDataName,
-            fetchData,
+            load,
             getInitialState,
             getInStore: getOutOfStore,
           });

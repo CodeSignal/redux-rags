@@ -11,6 +11,7 @@ describe('noConfigurationWarning', () => {
   });
 
   beforeEach(() => {
+    // $FlowFixMe : Flow doesn't understand jest module mocks.
     warning.mockClear();
   });
 

@@ -19,7 +19,7 @@ type PartialReducer<T> = (state: BoilerState<T>, action: *) => BoilerState<T>;
 
 type ConfigType<T, G> = {
   name?: string,
-  fetchData?: (...args: G) => T | Promise<T>,
+  load?: (...args: G) => T | Promise<T>,
   partialReducer?: PartialReducer<T>,
   update?: (data: ?T, *) => ?T | Promise<?T>,
   getInStore?: (store: Object) => BoilerState<T>,
@@ -76,7 +76,7 @@ export const createGetInitialState = (getInitialState: *) => (): BoilerState<any
 const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
   const {
     name = '',
-    fetchData,
+    load,
     getInStore,
     loadOnlyOnce,
     getInitialState,
@@ -172,7 +172,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       dispatch: Dispatch,
       getState: () => Object
     ): Promise<?T> => {
-      if (!fetchData) {
+      if (!load) {
         return null;
       }
       if (loadOnlyOnce) {
@@ -183,7 +183,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       }
       dispatch(Actions.beginLoading());
       try {
-        const data = await Promise.resolve(fetchData(...args));
+        const data = await Promise.resolve(load(...args));
         dispatch(Actions.updateData(data));
         return data;
       } catch (err) {

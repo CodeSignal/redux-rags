@@ -3,7 +3,7 @@ Redux Reducers, Actions, and Generators: Simplified!
 
 Generate and automatically inject reducers that manage the `begin load -> load -> endLoad -> set data || set error` lifecycle for data fetching.
 
-TLDR: `({ fetchData }) => ({ actions: { load }, getters: { getData } })`
+TLDR: `({ load }) => ({ actions: { load }, getters: { getData } })`
 
 ## Motivation
 We found that a lot of our reducers were redefining a common theme. We have some endpoint
@@ -18,15 +18,39 @@ Huge thanks to Jimmy Shen for [this amazing Medium article](https://medium.com/@
 on dynamically injecting reducers into the redux store.
 
 ## Usage
-### Using the `ragFactory`: Basic Data Request
-Here's how you'd interact with redux for a data request. The returned `load` function will take the same arguments as the `fetchData` function.
+
+### Simplest Example
+Here we want to hit this `axios` endpoint with the `userId` parameter. We'll avoid worrying about loading states or anything for now. The call to `ragFactory` creates the actions and injects the subreducer for us. Then this state information is stored in redux.
+
+```js
+import React from 'react';
+import { connect } from 'react-redux';
+import { ragFactory } from 'redux-rags';
+
+// Pass load to factory, factory returns a load that we can give to redux, will have the same signature as the function we passed in.
+const { actions: { load }, getters: { getData } } = ragFactory(
+  load: (userId) => axios.get('/users', { userId })
+});
+
+function ViewUser({userId, load, user}) {
+  return (
+    <div>
+      <button onClick={() => load(userId)}>Load User Info</button>
+      {user && <UserData data={user} />}
+    </div>
+  )
+}
+
+export default connect(state => ({ user: getData(state)}), { load })(ViewUser)
+```
+
+### Using the `ragFactory` in another file
+Here's how you'd interact with redux for a data request. The returned `load` function will take the same arguments as the `load` function passed in.
 ```js
 import { ragFactory } from 'redux-rags';
 
-const fetchData = () => axios.get('/faq')
-
 const { actions: { load }, getters: { getData, getIsLoading } } =
-  ragFactory({ fetchData });
+  ragFactory({ load: () => axios.get('/faq') });
 
 export {
   loadFaq: load,
@@ -81,7 +105,7 @@ it wherever you want, just update the `getInStore` function passed to `ragFactor
 import { generator };
 const { actions, subreducer, get, getData, getMeta } = generator({
   name: 'MY_DATA',
-  fetchData: (param) => methodService.run('fetchSomething', param),
+  load: (param) => methodService.run('fetchSomething', param),
   getInStore: (store) => store && store.currentUser && store.currentUser.my_data
 });
 ```
@@ -92,13 +116,13 @@ as a key for a different mini state machine.
 
 ```js
  const { action: { load }, getters: { getData, getMeta } } =
-   ragFactoryMap({ fetchData: Function })
+   ragFactoryMap({ load: Function })
 
- // Somewhere else, maybe in a component
+ // Somewhere else, maybe in a component after `load` was passed in through mapDispatchToProps.
 
  ...
  componentDidMount() {
-   const { loaded, taskId, userId } = this.props;
+   const { loaded, load, taskId, userId } = this.props;
    !loaded && load(userId, taskId);
  }
  ...
@@ -143,7 +167,7 @@ configureRags(store, createRootReducer);
 Getters take in the full store as the argument. For `ragFactory`, you'll have access to the following getters:
 
 - `get`: Returns `BoilerState<T>`, so an object that looks like `{ data, meta }`.
-- `getData`: Returns the `data` attribute from `BoilerState<T>`. It would be type `?T`, whatever your fetchData / update functions passed to the `ragFactory` return.
+- `getData`: Returns the `data` attribute from `BoilerState<T>`. It would be type `?T`, whatever your load / update functions passed to the `ragFactory` return.
 - `getMeta`: Returns the `meta` attribute from `BoilerState<T>`. This will be an object that looks like `{ loading, lastLoadTime, errors }`, with a few more properties. Look for the types / additional properties in the type definition.
 - `getIsLoading`: Returns the `loading` attribute from the `meta` field. A common use case is for quick access to the loading state, so a special getter is provided for this meta attribute.
 
@@ -156,7 +180,7 @@ Actions are implementations of commonly used features to manipulate the state. M
 - `clearErrors`: Clears the errors meta value.
 - `updateData`: Sets the data value for the subreducer.
 - `update`: Thunk. Calls the `update` function passed in to `ragsFactory` and sets the data value to the result. Might also set the error attribute if the `update` function throws an error.
-- `load`: Thunk. Calls the appropriate sequence of `beginLoading`, `updateData`, `endLoading` actions while calling the `fetchData` function passed to `ragsFactory`. If there are errors while executing, the error meta value will be set.
+- `load`: Thunk. Calls the appropriate sequence of `beginLoading`, `updateData`, `endLoading` actions while calling the `load` function passed to `ragsFactory`. If there are errors while executing, the error meta value will be set.
 
 ## Details and explanations of exports
 
@@ -202,7 +226,7 @@ You can call this function and inject your own subreducers. You could just use `
 
 ### ragFactory
 
-Though both `fetchData` and `update` are optional, you pass at least one. With neither of these, there is no good way to
+Though both `load` and `update` are optional, you pass at least one. With neither of these, there is no good way to
 update the data or metadata fields.
 
 The `ragFactory` will place the dynamically added subreducers in the `@@redux-rags` top leve of the redux store.
@@ -212,8 +236,8 @@ pass in the `getInStore` function.
 |  Props  |  Type  |  Optional  |  Description  |
 |:-------:|:------:|:----------:|:-------------:|
 | name | string | yes | A string that identifies the data. If you pass a name, the actions sent to redux and the automatically injected subreducer will use that name. |
-| fetchData | Function | yes | A function that loads data |
-| getInitialState | Function | yes | Function to create initial data for the return of fetchData, will use null if not defined |
+| load | Function | yes | A function that loads data |
+| getInitialState | Function | yes | Function to create initial data for the return of `load`, will use null if not defined |
 | getInStore | Function | yes | `(state) => state.some.path.to.subreducer` Function to locate the subreducer in the store. Will place in default location if not specified, otherwise will use this location in getters. |
 | update | Function | yes | (dataValue, ...args) => { return newData; } A function to manipulate the data attribute. Returned `update` will have signature `(...args) => void` |
 | loadOnlyOnce | boolean | yes | Prevent the `load` function from being called more than once. |
@@ -228,8 +252,8 @@ The `ragFactoryMap` builds on top of `ragFactory`. That factory is used internal
 | Props | Type | Optional | Description |
 |:-----:|:----:|:--------:|:-----------:|
 | name | string | yes | A string that identifies the data. If you pass a name, the actions sent to redux and the automatically injected subreducer will use that name. |
-| fetchData | Function | no | A function that loads data. The returned function will have the same signature. |
-| getInitialState | Function | yes | Function to create initial data for the return of fetchData, will use null if not defined |
+| load | Function | no | A function that loads data. The returned function will have the same signature. |
+| getInitialState | Function | yes | Function to create initial data for the return of load, will use null if not defined |
 
 
 ## License

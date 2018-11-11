@@ -14,7 +14,7 @@ describe('factory-simple', () => {
     getters,
   } = factory({
     name,
-    fetchData: loadNumber,
+    load: loadNumber,
     getInStore,
   });
 

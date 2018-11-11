@@ -9,13 +9,13 @@ describe('factoryMap', () => {
   const name = 'Test Data';
   let { actions, getters } = factoryMap({
     name,
-    fetchData: loadNumber,
+    load: loadNumber,
   });
 
   beforeEach(() => {
     let freshMap = factoryMap({
       name,
-      fetchData: loadNumber,
+      load: loadNumber,
     });
     actions = freshMap.actions;
     getters = freshMap.getters;

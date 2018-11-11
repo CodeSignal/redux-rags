@@ -63,7 +63,7 @@ describe('factoryOptions', () => {
       getters,
     } = factory({
       name,
-      fetchData: load,
+      load,
       getInStore,
       loadOnlyOnce: true,
     });
@@ -146,7 +146,7 @@ describe('factoryOptions', () => {
         getters,
       } = factory({
         name,
-        fetchData: load,
+        load,
         partialReducer,
         getInStore,
         loadOnlyOnce: true,
