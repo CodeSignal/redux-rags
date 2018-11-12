@@ -30,33 +30,10 @@ on dynamically injecting reducers into the redux store.
 
 ## Usage
 
-### Simplest Example
-Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about loading states or anything for now. The call to `ragFactory` creates the actions and injects the subreducer for us. Then this state information is stored in redux, so when users return to the component they'll see the cached data. [Play with a similar example on CodeSandbox](https://codesandbox.io/s/vnn9pnp6vl)
-
-```js
-import React from 'react';
-import { connect } from 'react-redux';
-import { ragFactory } from 'redux-rags';
-
-// Pass load to factory, factory returns a load that we can give to redux, will have the same signature as the function we passed in.
-const { actions: { load }, getters: { getData } } = ragFactory(
-  load: (userId) => axios.get('/users', { userId })
-});
-
-function ViewUser({userId, load, user}) {
-  return (
-    <div>
-      <button onClick={() => load(userId)}>Load User Info</button>
-      {user && <UserData data={user} />}
-    </div>
-  )
-}
-
-export default connect(state => ({ user: getData(state)}), { load })(ViewUser)
-```
-
-### Using the `ragFactory` in another file
-Here's how you'd interact with redux for a data request. The returned `load` function will take the same arguments as the `load` function passed in.
+### Let's define our redux interactions in a separate file
+Here's how you'd interact with redux for a data request. We're going to create the actions and
+automatically create and inject the subreducer. The returned `load` function will take the same
+arguments as the `load` function passed in.
 ```js
 import { ragFactory } from 'redux-rags';
 
@@ -106,58 +83,20 @@ const mapStateFromProps = state => ({
 export default connect(mapStateFromProps, { loadFaq })(Faq);
 ```
 
-### Placing the subreducer in a custom location in redux
-Connect subreducer to your desired location in the redux store, and tell the generator
-where you put it. Getters are also factories for you. If you don't care where the
-subreducer lives, don't pass in a `getInStore` method and the generator will place it for you.
-In this case taking `subreducer` and adding it to the `combineSubreducers` function in the `currentUser` subreducer. (But you can place
-it wherever you want, just update the `getInStore` function passed to `ragFactory`.
-```js
-import { generator };
-const { actions, subreducer, getters } = generator({
-  name: 'MY_DATA',
-  load: (param) => methodService.run('fetchSomething', param),
-  getInStore: (store) => store && store.currentUser && store.currentUser.my_data
-});
-```
+And that's it! That's all you need to do, no need to handle creating or placing a subreducer
+anywhere, that's all being handled behind the scenes for you. The subreducer is a pretty basic
+one, it just holds the return of `load` in the data attribute and keeps track of some meta
+information. If you want to adjust how you're calling load based on the meta data, like delaying
+or debouncing the request, you can define those interactions yourself using the meta data.
 
-### Using update to manipulate the stored value
-In addition to `load` you can also pass in an `update` function, which will take the current `data` value as the first parameter. An example of this might be an update function that increments the current value by 2. The signature of the returned function is slightly different, as the `data` first argument is passed internally, so you pass in a function that takes parameters `(currentData, ...additionalParams)` and the returned `actions.update` function will take the parameters `(...additionalParams)`. [View on CodeSandbox](https://codesandbox.io/s/1307vwj8zj)
-```js
-import { generator };
-const { actions : { update }, getters } = generator({
-  name: 'MY_DATA',
-  update: (currentData) => currentData + 2,
-});
-```
+If you want to keep track of data by parameters passed to `load`, i.e. loading a whole bunch
+of users, you'll want to use `ragFactoryMap`. This will use `ragFactory` behind the scenes to
+create the simple mini-reducer for each set of parameters you specify.
 
-### Using the ragFactoryMap
-Not much to say, it's pretty much how you would use `ragFactory`, except treating the input arguments
-as a key for a different mini state machine.
-
-```js
- const { action: { load }, getters: { getData, getMeta } } =
-   ragFactoryMap({ load: Function })
-
- // Somewhere else, maybe in a component after `load` was passed in through mapDispatchToProps.
-
- ...
- componentDidMount() {
-   const { loaded, load, taskId, userId } = this.props;
-   !loaded && load(userId, taskId);
- }
- ...
- mapStateToProps(state, props) {
-   const { userId, taskId } = props;
-   return {
-     loaded: getMeta(userId, taskId).loaded,
-     taskData: getData(userId, taskId)
-   }
- }
-```
 
 ## Pre Requisites
-You'll need `redux-thunk` and to reformate your `createRootReducer` function. We'll need to handle the addition of dynamic reducers!
+You'll need `redux-thunk` and to restructure your `createRootReducer` function. We'll
+need to handle the addition of dynamic reducers!
 
 Here's what your redux store creation will look like:
 ```js
@@ -225,7 +164,7 @@ type BoilerState<T> = {
 | loaded | Has the data every been loaded? Equivalent to `changeCount > 0` |
 | changeCount | Number of times the data has been loaded / updated |
 | lastChangeTime | The time of the last change |
-| errors | Error object from the loading function, if any |
+| errors | Error object from the `load` or `update` function, if any |
 
 ### configureRags
 Signature: `(store: Object, createRootReducer: Function) => void`.
@@ -276,6 +215,86 @@ The `ragFactoryMap` builds on top of `ragFactory`. That factory is used internal
 | load | Function | no | A function that loads data. The returned function will have the same signature. |
 | getInitialState | Function | yes | Function to create initial data for the return of load, will use null if not defined |
 
+
+## Additional Examples
+
+### Single File Redux Connection Example
+Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about
+loading states or anything for now. The call to `ragFactory` creates the actions and injects
+the subreducer for us. Then this state information is stored in redux, so when users return to the
+component they'll see the cached data. [Play with a similar example on CodeSandbox](https://codesandbox.io/s/vnn9pnp6vl)
+
+```js
+import React from 'react';
+import { connect } from 'react-redux';
+import { ragFactory } from 'redux-rags';
+
+// Pass load to factory, factory returns a load that we can give to redux, will have the same signature as the function we passed in.
+const { actions: { load }, getters: { getData } } = ragFactory(
+  load: (userId) => axios.get('/users', { userId })
+});
+
+function ViewUser({userId, load, user}) {
+  return (
+    <div>
+      <button onClick={() => load(userId)}>Load User Info</button>
+      {user && <UserData data={user} />}
+    </div>
+  )
+}
+
+export default connect(state => ({ user: getData(state)}), { load })(ViewUser)
+```
+
+### Placing the subreducer in a custom location in redux
+Connect subreducer to your desired location in the redux store, and tell the generator
+where you put it. Getters are also factories for you. If you don't care where the
+subreducer lives, don't pass in a `getInStore` method and the generator will place it for you.
+In this case taking `subreducer` and adding it to the `combineSubreducers` function in the `currentUser` subreducer.
+But you can place it wherever you want, just update the `getInStore` function passed to `ragFactory`.
+```js
+import { generator };
+const { actions, subreducer, getters } = generator({
+  name: 'MY_DATA',
+  load: (param) => methodService.run('fetchSomething', param),
+  getInStore: (store) => store && store.currentUser && store.currentUser.my_data
+});
+```
+
+### Using update to manipulate the stored value
+In addition to `load` you can also pass in an `update` function, which will take the current `data` value as the first parameter. An example of this might be an update function that increments the current value by 2. The signature of the returned function is slightly different, as the `data` first argument is passed internally, so you pass in a function that takes parameters `(currentData, ...additionalParams)` and the returned `actions.update` function will take the parameters `(...additionalParams)`. [View on CodeSandbox](https://codesandbox.io/s/1307vwj8zj)
+```js
+import { generator };
+const { actions : { update }, getters } = generator({
+  name: 'MY_DATA',
+  update: (currentData) => currentData + 2,
+});
+```
+
+### Using the ragFactoryMap
+Not much to say, it's pretty much how you would use `ragFactory`, except treating the input arguments
+as a key for a different mini state machine.
+
+```js
+ const { action: { load }, getters: { getData, getMeta } } =
+   ragFactoryMap({ load: Function })
+
+ // Somewhere else, maybe in a component after `load` was passed in through mapDispatchToProps.
+
+ ...
+ componentDidMount() {
+   const { loaded, load, taskId, userId } = this.props;
+   !loaded && load(userId, taskId);
+ }
+ ...
+ mapStateToProps(state, props) {
+   const { userId, taskId } = props;
+   return {
+     loaded: getMeta(userId, taskId).loaded,
+     taskData: getData(userId, taskId)
+   }
+ }
+```
 
 ## License
 MIT
