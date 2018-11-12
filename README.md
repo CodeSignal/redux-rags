@@ -13,7 +13,11 @@ We found that a lot of our reducers were redefining a common theme. We have some
 that we want to query for data. So we'll want a `begin loading` action, so we can render
 a fancy loading spinner. Then we'll hit the endpoint, maybe it returns data, maybe we get
 an error. But we definitely stopped loading. And that's it. A mini-state machine that we
-redefined dozens of times. But what if there were an easier way? What if we could define
+redefined dozens of times. Repeating this pattern over and over again, re-creating similar
+Actions and Subreducers.
+
+
+But what if there were an easier way? What if we could define
 that mini state machine once and re-use the logic with each query? Well `redux-rags` is
 here to help clean up all the spilled copy-pasta from your redux boilerplate!
 
