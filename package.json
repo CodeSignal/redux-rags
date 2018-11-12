@@ -1,6 +1,6 @@
 {
   "name": "redux-rags",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Redux Reducers, Actions, and Getters. Simplified!",
   "main": "index.js",
   "scripts": {
