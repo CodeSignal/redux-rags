@@ -20,7 +20,7 @@ on dynamically injecting reducers into the redux store.
 ## Usage
 
 ### Simplest Example
-Here we want to hit this `axios` endpoint with the `userId` parameter. We'll avoid worrying about loading states or anything for now. The call to `ragFactory` creates the actions and injects the subreducer for us. Then this state information is stored in redux.
+Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about loading states or anything for now. The call to `ragFactory` creates the actions and injects the subreducer for us. Then this state information is stored in redux, so when users return to the component they'll see the cached data. 
 
 ```js
 import React from 'react';
@@ -103,10 +103,20 @@ In this case taking `subreducer` and adding it to the `combineSubreducers` funct
 it wherever you want, just update the `getInStore` function passed to `ragFactory`.
 ```js
 import { generator };
-const { actions, subreducer, get, getData, getMeta } = generator({
+const { actions, subreducer, getters } = generator({
   name: 'MY_DATA',
   load: (param) => methodService.run('fetchSomething', param),
   getInStore: (store) => store && store.currentUser && store.currentUser.my_data
+});
+```
+
+### Using update to manipulate the stored value
+In addition to `load` you can also pass in an `update` function, which will take the current `data` value as the first parameter. An example of this might be an update function that increments the current value by 2. The signature of the returned function is slightly different, as the `data` first argument is passed internally, so you pass in a function that takes parameters `(currentData, ...additionalParams)` and the returned `actions.update` function will take the parameters `(...additionalParams)`.
+```js
+import { generator };
+const { actions : { update }, getters } = generator({
+  name: 'MY_DATA',
+  update: (currentData) => currentData + 2,
 });
 ```
 
