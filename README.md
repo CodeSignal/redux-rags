@@ -16,6 +16,10 @@ an error. But we definitely stopped loading. And that's it. A mini-state machine
 redefined dozens of times. Repeating this pattern over and over again, re-creating similar
 Actions and Subreducers.
 
+<center>
+  <img src="media/data-flow.png" width="80%" />
+</center>
+
 
 But what if there were an easier way? What if we could define
 that mini state machine once and re-use the logic with each query? Well `redux-rags` is
