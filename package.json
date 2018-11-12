@@ -17,6 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/CodeSignal/redux-rags.git"
   },
+  "main": "build/index.js",
   "files": [
     "build"
   ],
