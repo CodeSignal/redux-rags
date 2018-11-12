@@ -5,3 +5,8 @@ CODE_OF_CONDUCT.md
 .eslintrc
 .flowconfig
 flow-typed
+.idea
+coverage
+test
+.travis.yml
+.DS_Store
