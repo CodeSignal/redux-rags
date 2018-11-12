@@ -1,4 +1,7 @@
 # Redux-Rags
+[![npm version](https://img.shields.io/npm/v/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
+[![npm downloads](https://img.shields.io/npm/dm/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
+
 Redux Reducers, Actions, and Generators: Simplified!
 
 Generate and automatically inject reducers that manage the `begin load -> load -> endLoad -> set data || set error` lifecycle for data fetching.
@@ -20,7 +23,7 @@ on dynamically injecting reducers into the redux store.
 ## Usage
 
 ### Simplest Example
-Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about loading states or anything for now. The call to `ragFactory` creates the actions and injects the subreducer for us. Then this state information is stored in redux, so when users return to the component they'll see the cached data. 
+Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about loading states or anything for now. The call to `ragFactory` creates the actions and injects the subreducer for us. Then this state information is stored in redux, so when users return to the component they'll see the cached data. [Play with a similar example on CodeSandbox](https://codesandbox.io/s/vnn9pnp6vl)
 
 ```js
 import React from 'react';
@@ -111,7 +114,7 @@ const { actions, subreducer, getters } = generator({
 ```
 
 ### Using update to manipulate the stored value
-In addition to `load` you can also pass in an `update` function, which will take the current `data` value as the first parameter. An example of this might be an update function that increments the current value by 2. The signature of the returned function is slightly different, as the `data` first argument is passed internally, so you pass in a function that takes parameters `(currentData, ...additionalParams)` and the returned `actions.update` function will take the parameters `(...additionalParams)`.
+In addition to `load` you can also pass in an `update` function, which will take the current `data` value as the first parameter. An example of this might be an update function that increments the current value by 2. The signature of the returned function is slightly different, as the `data` first argument is passed internally, so you pass in a function that takes parameters `(currentData, ...additionalParams)` and the returned `actions.update` function will take the parameters `(...additionalParams)`. [View on CodeSandbox](https://codesandbox.io/s/1307vwj8zj)
 ```js
 import { generator };
 const { actions : { update }, getters } = generator({
