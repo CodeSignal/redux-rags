@@ -1,6 +1,6 @@
 {
   "name": "redux-rags",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Redux Reducers, Actions, and Getters. Simplified!",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,9 @@
     "type": "git",
     "url": "git+https://github.com/CodeSignal/redux-rags.git"
   },
+  "files": [
+    "build"
+  ],
   "jest": {
     "testMatch": [
       "<rootDir>/**/?(*.)+(test).js"
