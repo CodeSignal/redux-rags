@@ -1,8 +1,7 @@
 # Redux-Rags
 [![npm version](https://img.shields.io/npm/v/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
 [![npm downloads](https://img.shields.io/npm/dm/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
-[![minified](https://badgen.net/bundlephobia/min/redux-rags)](https://bundlephobia.com/result?p=redux-rags)
-[![minified + gzipped](https://badgen.net/bundlephobia/minzip/redux-rags)](https://bundlephobia.com/result?p=redux-rags)
+[![Coverage Status](https://coveralls.io/repos/github/CodeSignal/redux-rags/badge.svg?branch=master)](https://coveralls.io/github/CodeSignal/redux-rags?branch=master)
 
 Redux Reducers, Actions, and Generators: Simplified!
 
