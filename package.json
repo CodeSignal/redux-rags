@@ -1,8 +1,8 @@
 {
   "name": "redux-rags",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Redux Reducers, Actions, and Getters. Simplified!",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "build": "babel src -d build --copy-files",
     "lint": "eslint src/**",
@@ -17,7 +17,6 @@
     "type": "git",
     "url": "git+https://github.com/CodeSignal/redux-rags.git"
   },
-  "main": "build/index.js",
   "files": [
     "build"
   ],
@@ -63,5 +62,8 @@
     "flow-bin": "^0.86.0",
     "jest": "^23.6.0",
     "redux": "^4.0.1"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0"
   }
 }
