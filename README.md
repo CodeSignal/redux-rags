@@ -104,7 +104,7 @@ import thunk from 'redux-thunk';
 
 import { combineAsyncReducers, configureRags } from 'redux-rags';
 
-// ... import a few reducers, we'll use userReducer as an example
+// ... import a few reducers; we'll use userReducer as an example
 import userReducer from './userReducer';
 
 const createRootReducer = (dynamicReducers: Object = {}) => {
