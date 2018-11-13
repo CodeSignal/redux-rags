@@ -3,48 +3,48 @@
 [![npm downloads](https://img.shields.io/npm/dm/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
 [![Coverage Status](https://coveralls.io/repos/github/CodeSignal/redux-rags/badge.svg?branch=master)](https://coveralls.io/github/CodeSignal/redux-rags?branch=master)
 
-Redux Reducers, Actions, and Generators: Simplified!
+Redux **R**educers, **A**ctions, and **G**etters: Simplified!
 
-Generate and automatically inject reducers that manage the `begin load -> load -> endLoad -> set data || set error` lifecycle for data fetching.
-
-TLDR: `({ load }) => ({ actions: { load }, getters: { getData } })`
+TLDR: No need to create subreducers. Your Redux connection is handled by a single function
+```js
+const { actions: { load }, getters: { getData } } = ragFactory({ load });
+```
 
 ## Motivation
 We found that a lot of our reducers were redefining a common theme. We have some endpoint
-that we want to query for data. So we'll want a `begin loading` action, so we can render
-a fancy loading spinner. Then we'll hit the endpoint, maybe it returns data, maybe we get
-an error. But we definitely stopped loading. And that's it. A mini-state machine that we
-redefined dozens of times. Repeating this pattern over and over again, re-creating similar
-Actions and Subreducers.
+that we want to query for data. We'd run through the same steps every time:
+* Begin loading state
+* Fetch Data
+* End Loading State
+* Set data or error
 
 <center>
   <img src="media/data-flow.png" width="80%" />
 </center>
 
-
-But what if there were an easier way? What if we could define
-that mini state machine once and re-use the logic with each query? Well `redux-rags` is
-here to help clean up all the spilled copy-pasta from your redux boilerplate!
-
-Huge thanks to Jimmy Shen for [this amazing Medium article](https://medium.com/@jimmy_shen/inject-reducer-arbitrarily-rather-than-top-level-for-redux-store-to-replace-reducer-fdc1060a6a7)
-on dynamically injecting reducers into the redux store.
+And that's it: A mini state machine that we redefined over and over, creating dozens of
+similar actions and subreducers. But what if there were an easier way? What if we could
+define that mini state machine once and re-use the logic with each kind of query? Well `redux-rags` is
+here to help!
 
 ## Usage
 
-### Let's define our redux interactions in a separate file
-Here's how you'd interact with redux for a data request. We're going to create the actions and
+### Let's define our Redux interactions
+Here's how you'd interact with Redux for a data request. We're going to create the actions and
 automatically create and inject the subreducer. The returned `load` function will take the same
-arguments as the `load` function passed in.
+arguments as the `load` function passed in, so you have complete control over what the `load`
+function is. Here we're going for a parameter-less fetch request, just for the sake of the example.
+We'll need to pass `actions`
 ```js
 import { ragFactory } from 'redux-rags';
 
-const { actions: { load }, getters: { getData, getIsLoading } } =
-  ragFactory({ load: () => axios.get('/faq') });
+const axiosLoadFaq = () => fetch('http://api.example.com/data.json');
+const { actions, getters } = ragFactory({ load: axiosLoadFaq });
 
 export {
-  loadFaq: load,
-  getFaq: getData,
-  getIsFaqLoading: getIsLoading
+  loadFaq: actions.load,
+  getFaq: getters.getData,
+  getIsFaqLoading: getters.getIsLoading,
 };
 ```
 
@@ -84,22 +84,20 @@ const mapStateFromProps = state => ({
 export default connect(mapStateFromProps, { loadFaq })(Faq);
 ```
 
-And that's it! That's all you need to do, no need to handle creating or placing a subreducer
-anywhere, that's all being handled behind the scenes for you. The subreducer is a pretty basic
-one, it just holds the return of `load` in the data attribute and keeps track of some meta
-information. If you want to adjust how you're calling load based on the meta data, like delaying
-or debouncing the request, you can define those interactions yourself using the meta data.
+And that's it! That's all you need to do; no need to manually create or place a subreducer
+anywhere. The subreducer is pretty basic, it holds the return of `load` in the data attribute.
+It also keeps track of meta information, like last load time, number of times loaded, and errors.
 
 If you want to keep track of data by parameters passed to `load`, i.e. loading a whole bunch
 of users, you'll want to use `ragFactoryMap`. This will use `ragFactory` behind the scenes to
 create the simple mini-reducer for each set of parameters you specify.
 
 
-## Pre Requisites
+## Prerequisites
 You'll need `redux-thunk` and to restructure your `createRootReducer` function. We'll
 need to handle the addition of dynamic reducers!
 
-Here's what your redux store creation will look like:
+Here's what your Redux store creation will look like:
 ```js
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -170,7 +168,7 @@ type BoilerState<T> = {
 ### configureRags
 Signature: `(store: Object, createRootReducer: Function) => void`.
 
-This function is how you set up the module, giving it access to your redux store. This is used to configure the reducer
+This function is how you set up the module, giving it access to your Redux store. This is used to configure the reducer
 injector. We need `store` for the [`replaceReducer`](https://redux.js.org/api/store#replaceReducer) method. And we'll need to have a formatted `createRootReducer` function that accepts dynamic reducers. We've provided a `combineAsyncReducers` function to make this easier.
 
 ### combineAsyncReducers
@@ -190,19 +188,19 @@ You can call this function and inject your own subreducers. You could just use `
 Though both `load` and `update` are optional, you pass at least one. With neither of these, there is no good way to
 update the data or metadata fields.
 
-The `ragFactory` will place the dynamically added subreducers in the `@@redux-rags` top leve of the redux store.
-If you want to place this somewhere else, just put the returned `subreducer` somewhere in your redux store and
+The `ragFactory` will place the dynamically added subreducers in the `@@redux-rags` top leve of the Redux store.
+If you want to place this somewhere else, just put the returned `subreducer` somewhere in your Redux store and
 pass in the `getInStore` function.
 
 |  Props  |  Type  |  Optional  |  Description  |
 |:-------:|:------:|:----------:|:-------------:|
-| name | string | yes | A string that identifies the data. If you pass a name, the actions sent to redux and the automatically injected subreducer will use that name. |
+| name | string | yes | A string that identifies the data. If you pass a name, the actions sent to Redux and the automatically injected subreducer will use that name. |
 | load | Function | yes | A function that loads data |
 | getInitialState | Function | yes | Function to create initial data for the return of `load`, will use null if not defined |
 | getInStore | Function | yes | `(state) => state.some.path.to.subreducer` Function to locate the subreducer in the store. Will place in default location if not specified, otherwise will use this location in getters. |
 | update | Function | yes | (dataValue, ...args) => { return newData; } A function to manipulate the data attribute. Returned `update` will have signature `(...args) => void` |
 | loadOnlyOnce | boolean | yes | Prevent the `load` function from being called more than once. |
-| partialReducer | Function | yes | Allows you to hook in to other actions in the redux store and modify the state. You'll be working with the BoilerState argument. Extend the reducer and listen to other actions, for example you can could clear the data on user logout. Write this like a reducer to extend the functionality of the generated boilerplate. You can also delay assignment if you want to utilize actions in the returned Actions object, just assign the function to `subreducer.partialReducer`.|
+| partialReducer | Function | yes | Allows you to hook in to other actions in the Redux store and modify the state. You'll be working with the BoilerState argument. Extend the reducer and listen to other actions, for example you can could clear the data on user logout. Write this like a reducer to extend the functionality of the generated boilerplate. You can also delay assignment if you want to utilize actions in the returned Actions object, just assign the function to `subreducer.partialReducer`.|
 
 ### ragFactoryMap
 What's this `ragFactoryMap`? Well if you want to cache data based on the query parameters, then the `ragFactoryMap` is for you!
@@ -212,7 +210,7 @@ The `ragFactoryMap` builds on top of `ragFactory`. That factory is used internal
 
 | Props | Type | Optional | Description |
 |:-----:|:----:|:--------:|:-----------:|
-| name | string | yes | A string that identifies the data. If you pass a name, the actions sent to redux and the automatically injected subreducer will use that name. |
+| name | string | yes | A string that identifies the data. If you pass a name, the actions sent to Redux and the automatically injected subreducer will use that name. |
 | load | Function | no | A function that loads data. The returned function will have the same signature. |
 | getInitialState | Function | yes | Function to create initial data for the return of load, will use null if not defined |
 
@@ -222,7 +220,7 @@ The `ragFactoryMap` builds on top of `ragFactory`. That factory is used internal
 ### Single File Redux Connection Example
 Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about
 loading states or anything for now. The call to `ragFactory` creates the actions and injects
-the subreducer for us. Then this state information is stored in redux, so when users return to the
+the subreducer for us. Then this state information is stored in Redux, so when users return to the
 component they'll see the cached data. [Play with a similar example on CodeSandbox](https://codesandbox.io/s/vnn9pnp6vl)
 
 ```js
@@ -230,8 +228,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ragFactory } from 'redux-rags';
 
-// Pass load to factory, factory returns a load that we can give to redux, will have the same signature as the function we passed in.
-const { actions: { load }, getters: { getData } } = ragFactory(
+// Pass load to factory, factory returns a load that we can give to Redux, will have the same signature as the function we passed in.
+const { actions: { load }, getters: { getData } } = ragFactory({
   load: (userId) => axios.get('/users', { userId })
 });
 
@@ -247,8 +245,8 @@ function ViewUser({userId, load, user}) {
 export default connect(state => ({ user: getData(state)}), { load })(ViewUser)
 ```
 
-### Placing the subreducer in a custom location in redux
-Connect subreducer to your desired location in the redux store, and tell the generator
+### Placing the subreducer in a custom location in Redux
+Connect subreducer to your desired location in the Redux store, and tell the generator
 where you put it. Getters are also factories for you. If you don't care where the
 subreducer lives, don't pass in a `getInStore` method and the generator will place it for you.
 In this case taking `subreducer` and adding it to the `combineSubreducers` function in the `currentUser` subreducer.
@@ -263,7 +261,13 @@ const { actions, subreducer, getters } = generator({
 ```
 
 ### Using update to manipulate the stored value
-In addition to `load` you can also pass in an `update` function, which will take the current `data` value as the first parameter. An example of this might be an update function that increments the current value by 2. The signature of the returned function is slightly different, as the `data` first argument is passed internally, so you pass in a function that takes parameters `(currentData, ...additionalParams)` and the returned `actions.update` function will take the parameters `(...additionalParams)`. [View on CodeSandbox](https://codesandbox.io/s/1307vwj8zj)
+In addition to `load` you can also pass in an `update` function, which will take the
+current `data` value as the first parameter. An example of this might be an update
+function that increments the current value by 2. The signature of the returned function
+is slightly different, as the `data` first argument is passed internally, so you pass
+in a function that takes parameters `(currentData, ...additionalParams)` and the returned
+`actions.update` function will take the parameters `(...additionalParams)`.
+[View on CodeSandbox](https://codesandbox.io/s/1307vwj8zj)
 ```js
 import { generator };
 const { actions : { update }, getters } = generator({
@@ -278,7 +282,7 @@ as a key for a different mini state machine.
 
 ```js
  const { action: { load }, getters: { getData, getMeta } } =
-   ragFactoryMap({ load: Function })
+   ragFactoryMap({ load: Function });
 
  // Somewhere else, maybe in a component after `load` was passed in through mapDispatchToProps.
 
@@ -299,3 +303,8 @@ as a key for a different mini state machine.
 
 ## License
 MIT
+
+## Thanks
+
+Huge thanks to Jimmy Shen for [this amazing Medium article](https://medium.com/@jimmy_shen/inject-reducer-arbitrarily-rather-than-top-level-for-redux-store-to-replace-reducer-fdc1060a6a7)
+on dynamically injecting reducers into the Redux store.
