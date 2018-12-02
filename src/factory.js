@@ -86,17 +86,16 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
   generatedCount += 1;
 
   const safeDataName = `${name}/${generatedCount}`;
+  const Getters = new function () {
+    const getInitialState: () => BoilerState<T> = createGetInitialState(getInitialState);
+    this.getInitialState  = getInitialState;
 
-  class Getters {
-    static getInitialState: () => BoilerState<T> = createGetInitialState(getInitialState);
-
-    static get =
-      getInStore ||
+    this.get = getInStore ||
       ((reduxStore: Object): BoilerState<T> =>
-        reduxStore[prefix][safeDataName] || Getters.getInitialState());
+        reduxStore[prefix][safeDataName] || this.getInitialState());
 
-    static getData = (reduxStore: Object): $PropertyType<BoilerState<T>, 'data'> => {
-      const state = Getters.get(reduxStore);
+    this.getData = (reduxStore: Object): $PropertyType<BoilerState<T>, 'data'> => {
+      const state = this.get(reduxStore);
       if (!state.hasOwnProperty('data')) {
         warning(`redux-rags: getData failed to find the property \'data\' on the object returned by Getters.get.
         This is likely caused by providing an incorrect 'getInStore' configuration option.`);
@@ -104,8 +103,8 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       return state.data;
     };
 
-    static getMeta = (reduxStore: Object): $PropertyType<BoilerState<T>, 'meta'> => {
-      const state = Getters.get(reduxStore);
+    this.getMeta = (reduxStore: Object): $PropertyType<BoilerState<T>, 'meta'> => {
+      const state = this.get(reduxStore);
       if (!state.hasOwnProperty('meta')) {
         warning(`redux-rags: getData failed to find the property \'meta\' on the object returned by Getters.get.
         This is likely caused by providing an incorrect 'getInStore' configuration option.`);
@@ -113,11 +112,11 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       return state.meta;
     };
 
-    static getIsLoading = (reduxStore: Object) => {
-      const meta = Getters.getMeta(reduxStore);
+    this.getIsLoading = (reduxStore: Object) => {
+      const meta = this.getMeta(reduxStore);
       return meta && meta.loading;
     };
-  }
+  };
 
   const BEGIN_LOADING = getLoadingType(name);
   const END_LOADING = getEndLoadingType(name);
@@ -125,50 +124,50 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
   const UPDATE_DATA = getUpdateType(name);
   const RESET = getResetType(name);
 
-  class Actions {
-    static beginLoading = () => ({
+  const Actions = new function(){
+    this.beginLoading = () => ({
       type: BEGIN_LOADING,
       payload: null,
     });
 
-    static endLoading = () => ({
+    this.endLoading = () => ({
       type: END_LOADING,
       payload: null,
     });
 
-    static reset = () => ({
+    this.reset = () => ({
       type: RESET,
       payload: null,
     });
 
-    static errors = (errors: Object | String) => ({
+    this.errors = (errors: Object | String) => ({
       type: ERRORS,
       payload: errors,
     });
 
-    static clearErrors = () => ({
+    this.clearErrors = () => ({
       type: ERRORS,
       payload: null,
     });
 
-    static updateData = (data: ?T) => ({
+    this.updateData = (data: ?T) => ({
       type: UPDATE_DATA,
       payload: data,
     });
 
-    static update = (...args: *) => async (dispatch, getState: () => Object) => {
+    this.update = (...args: *) => async (dispatch, getState: () => Object) => {
       if (!update || typeof update !== 'function') {
         return;
       }
       try {
         const manipulated = await Promise.resolve(update(Getters.getData(getState()), ...args));
-        dispatch(Actions.updateData(manipulated));
+        dispatch(this.updateData(manipulated));
       } catch (err) {
-        dispatch(Actions.errors(err));
+        dispatch(this.errors(err));
       }
     };
 
-    static load = (...args: G) => async (
+    this.load = (...args: G) => async (
       dispatch: Dispatch,
       getState: () => Object
     ): Promise<?T> => {
@@ -181,19 +180,19 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
           return state.data;
         }
       }
-      dispatch(Actions.beginLoading());
+      dispatch(this.beginLoading());
       try {
         const data = await Promise.resolve(load(...args));
-        dispatch(Actions.updateData(data));
+        dispatch(this.updateData(data));
         return data;
       } catch (err) {
-        dispatch(Actions.errors(err));
+        dispatch(this.errors(err));
         return null;
       } finally {
-        dispatch(Actions.endLoading());
+        dispatch(this.endLoading());
       }
     };
-  }
+  };
 
   type Interpret = <R>((...Iterable<any>) => R) => R;
   type ExtractReturn<Fn> = $Call<Interpret, Fn>;
@@ -204,11 +203,10 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     | ExtractReturn<typeof Actions.clearErrors>
     | ExtractReturn<typeof Actions.updateData>
     | ExtractReturn<typeof Actions.endLoading>;
+  const Subreducer = new function() {
+    this.partialReducer = partialReducer;
 
-  class Subreducer {
-    static partialReducer = partialReducer;
-
-    static subreduce = (
+    this.subreduce = (
       state?: BoilerState<T> = Getters.getInitialState(),
       action?: GeneratedAction | * // Support other action types
     ) => {
@@ -241,13 +239,13 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
           if (typeof Subreducer.partialReducer === 'function') {
             return {
               ...state,
-              ...(Subreducer.partialReducer(state, action) || {}),
+              ...(this.partialReducer(state, action) || {}),
             };
           }
           return state;
       }
     };
-  }
+  };
 
   if (!getInStore) {
     injectReducer([prefix, safeDataName], Subreducer.subreduce);
