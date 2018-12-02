@@ -1,4 +1,4 @@
-# Redux-Rags
+# Redux-RAGs
 [![npm version](https://img.shields.io/npm/v/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
 [![npm downloads](https://img.shields.io/npm/dm/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
 [![Coverage Status](https://coveralls.io/repos/github/CodeSignal/redux-rags/badge.svg?branch=master)](https://coveralls.io/github/CodeSignal/redux-rags?branch=master)
