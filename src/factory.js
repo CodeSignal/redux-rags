@@ -236,7 +236,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
         case RESET:
           return (Getters.getInitialState(): BoilerState<T>);
         default:
-          if (typeof Subreducer.partialReducer === 'function') {
+          if (typeof this.partialReducer === 'function') {
             return {
               ...state,
               ...(this.partialReducer(state, action) || {}),
