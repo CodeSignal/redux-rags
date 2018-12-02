@@ -49,7 +49,7 @@ arguments as the `load` function passed in, so you have control over the `load` 
 Here we want to hit an endpoint with the `userId` parameter. We'll avoid worrying about
 loading states or anything for now. The call to `ragFactory` creates the actions and injects
 the subreducer for us. Then this state information is stored in Redux, so when users return to the
-component they'll see the cached data. [Play with a similar example on CodeSandbox](https://codesandbox.io/s/vnn9pnp6vl)
+component they'll see the cached data. [Play with a similar example on CodeSandbox](https://codesandbox.io/s/k218x138l7)
 
 ```js
 import React from 'react';
@@ -283,7 +283,7 @@ function that increments the current value by 2. The signature of the returned f
 is slightly different, as the `data` first argument is passed internally, so you pass
 in a function that takes parameters `(currentData, ...additionalParams)` and the returned
 `actions.update` function will take the parameters `(...additionalParams)`.
-[View on CodeSandbox](https://codesandbox.io/s/1307vwj8zj)
+[View an example that relies entirely on the `update` funciton on CodeSandbox](https://codesandbox.io/s/1307vwj8zj) 
 ```js
 import { generator };
 const { actions : { update }, getters } = generator({
