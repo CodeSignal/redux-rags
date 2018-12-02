@@ -8,7 +8,7 @@ let injectReducer = noConfigurationWarning;
 let ragFactory = noConfigurationWarning;
 let ragFactoryMap = noConfigurationWarning;
 
-const configureRags = (store: *, createRootReducer: *) => {
+function configureRags(store: *, createRootReducer: *) {
   injectReducer = makeReducerInjector(store, createRootReducer);
   ragFactory = createFactory(injectReducer);
   ragFactoryMap = createFactoryMap(injectReducer);
