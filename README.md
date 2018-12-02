@@ -8,8 +8,10 @@ Redux **R**educers, **A**ctions, and **G**etters: Simplified!
 TLDR: No need to create or connect subreducers for simple async requests. Your Redux connection is handled by a single function
 ```js
 const rag = ragFactory({ load });
+
 const newLoad = rag.actions.load;
 const getData = rag.getters.getData;
+connect(state => ({ data: getData(store) }), { load: newLoad })(Component);
 ```
 
 ## Motivation
