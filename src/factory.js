@@ -87,8 +87,8 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
 
   const safeDataName = `${name}/${generatedCount}`;
   const Getters = new function () {
-    const getInitialState: () => BoilerState<T> = createGetInitialState(getInitialState);
-    this.getInitialState  = getInitialState;
+    const wrappedGetInitialState: () => BoilerState<T> = createGetInitialState(getInitialState);
+    this.getInitialState  = wrappedGetInitialState;
 
     this.get = getInStore ||
       ((reduxStore: Object): BoilerState<T> =>
