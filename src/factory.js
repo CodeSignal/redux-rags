@@ -187,9 +187,8 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
         return data;
       } catch (err) {
         dispatch(this.errors(err));
-        return null;
-      } finally {
         dispatch(this.endLoading());
+        return null;
       }
     };
   };
