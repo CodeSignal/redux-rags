@@ -44,9 +44,9 @@
   },
   "homepage": "https://github.com/CodeSignal/redux-rags#readme",
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-flow": "^7.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-flow": "^6.23.0",
     "coveralls": "^3.0.2",
     "eslint": "^5.8.0",
     "eslint-plugin-import": "^2.14.0",
