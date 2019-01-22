@@ -187,9 +187,8 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
         return data;
       } catch (err) {
         dispatch(this.errors(err));
-        return null;
-      } finally {
         dispatch(this.endLoading());
+        return null;
       }
     };
   };
@@ -215,7 +214,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       }
       switch (action.type) {
         case BEGIN_LOADING:
-          return { ...state, meta: { ...state.meta, loading: true } };
+          return { ...state, meta: { ...state.meta, loading: true, } };
         case END_LOADING:
           return { ...state, meta: { ...state.meta, loading: false } };
         case ERRORS:
@@ -231,16 +230,13 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
               changeCount: state.meta.changeCount + 1,
               lastChangeTime: Date.now(),
               errors: null,
-            },
+            }
           };
         case RESET:
           return (Getters.getInitialState(): BoilerState<T>);
         default:
           if (typeof this.partialReducer === 'function') {
-            return {
-              ...state,
-              ...(this.partialReducer(state, action) || {}),
-            };
+            return {...state, ...(this.partialReducer(state, action) || {})};
           }
           return state;
       }

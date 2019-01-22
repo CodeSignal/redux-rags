@@ -153,7 +153,7 @@ describe('factory-simple', () => {
               type: expect.stringContaining('update'),
             })
           );
-          expect(dispatch).toHaveBeenCalledWith(
+          expect(dispatch).not.toHaveBeenCalledWith(
             expect.objectContaining({
               type: expect.stringContaining('end loading'),
             })
