@@ -9,6 +9,7 @@ module.exports = {
     "@babel/flow"
   ],
   plugins: [
+    "@babel/proposal-object-rest-spread",
     "transform-imports",
     "@babel/transform-modules-commonjs"
   ],

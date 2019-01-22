@@ -214,28 +214,29 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       }
       switch (action.type) {
         case BEGIN_LOADING:
-          return Object.assign({}, state, { meta: Object.assign({}, state.meta, { loading: true })});
+          return { ...state, meta: { ...state.meta, loading: true, } };
         case END_LOADING:
-          return Object.assign({}, state, { meta: Object.assign({}, state.meta, { loading: false })});
+          return { ...state, meta: { ...state.meta, loading: false } };
         case ERRORS:
-          return Object.assign({}, state, { meta: Object.assign({}, state.meta, { errors: action.payload })});
+          return { ...state, meta: { ...state.meta, errors: action.payload } };
         case UPDATE_DATA:
-          return Object.assign({}, state, {
+          return {
+            ...state,
             data: action.payload,
-            meta: Object.assign({}, state.meta, {
+            meta: {
+              ...state.meta,
               loading: false,
               loaded: true,
               changeCount: state.meta.changeCount + 1,
               lastChangeTime: Date.now(),
               errors: null,
-            }),
-
-          });
+            }
+          };
         case RESET:
           return (Getters.getInitialState(): BoilerState<T>);
         default:
           if (typeof this.partialReducer === 'function') {
-            return Object.assign({}, state, this.partialReducer(state, action) || {});
+            return {...state, ...(this.partialReducer(state, action) || {})};
           }
           return state;
       }
