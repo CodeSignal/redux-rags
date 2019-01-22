@@ -9,7 +9,7 @@
     "lint:watch": "esw -w lib/**",
     "prepublish": "npm run build",
     "flow": "flow",
-    "test": "npm run jest -- --coverage --coverageReporters=text-lcov | ./node_modules/coveralls/bin/coveralls.js",
+    "test": "jest",
     "jest": "./node_modules/.bin/jest --maxWorkers=2",
     "jest:watch": "npm run jest -- --watchAll"
   },
@@ -20,20 +20,6 @@
   "files": [
     "build"
   ],
-  "jest": {
-    "testMatch": [
-      "<rootDir>/**/?(*.)+(test).js"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/test/jest.transform.js"
-    },
-    "moduleFileExtensions": [
-      "js"
-    ],
-    "modulePaths": [
-      "<rootDir>/"
-    ]
-  },
   "keywords": [
     "redux"
   ],
@@ -46,6 +32,8 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
+    "babel-jest": "^23.6.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
     "coveralls": "^3.0.2",
     "eslint": "^5.8.0",
@@ -53,6 +41,7 @@
     "eslint-watch": "^4.0.2",
     "flow-bin": "^0.86.0",
     "jest": "^23.6.0",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "regenerator-runtime": "^0.13.1"
   }
 }
