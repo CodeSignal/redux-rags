@@ -9,7 +9,7 @@
     "lint:watch": "esw -w lib/**",
     "prepublish": "npm run build",
     "flow": "flow",
-    "test": "jest",
+    "test": "npm run jest -- --coverage --coverageReporters=text-lcov | ./node_modules/coveralls/bin/coveralls.js",
     "jest": "./node_modules/.bin/jest --maxWorkers=2",
     "jest:watch": "npm run jest -- --watchAll"
   },
