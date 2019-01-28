@@ -51,7 +51,7 @@ const createFactoryMap = (injectReducer: Function) => {
           const argsKey = convertArgsToString(...args);
           const state = Getters.get(reduxStore);
           if (!state || !state.hasOwnProperty(argsKey)) {
-            return this._getInitialStateForKey();
+            return Getters._getInitialStateForKey();
           }
           return state[argsKey];
         };
