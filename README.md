@@ -89,7 +89,7 @@ need to handle the addition of dynamic reducers!
 
 Here's what your Redux store creation will look like:
 ```js
-import { combineReducers, createStore, applyMiddleware } from 'redux';
+import { compose, combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import { combineAsyncReducers, configureRags } from 'redux-rags';

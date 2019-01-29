@@ -34,14 +34,14 @@ let generatedCount = 0;
 const convertArgsToString = (...args) => JSON.stringify(args);
 
 const createFactoryMap = (injectReducer: Function) => {
-    const factory = createFactory(injectReducer);
-    return <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
-      const { name = '', load, getInitialState } = config;
-      generatedCount += 1;
+  const factory = createFactory(injectReducer);
+  return <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
+    const { name = '', load, getInitialState } = config;
+    generatedCount += 1;
 
-      const safeDataName = `${name}/${generatedCount}`;
-      const mapArgsToGenerated = {};
-      class Getters {
+    const safeDataName = `${name}/${generatedCount}`;
+    const mapArgsToGenerated = {};
+    class Getters {
         static _getInitialStateForKey: () => BoilerState<T> = createGetInitialState(getInitialState);
 
         static get = (reduxStore: Object): MapState<T> =>
@@ -64,9 +64,9 @@ const createFactoryMap = (injectReducer: Function) => {
           const meta = Getters.getMeta(reduxStore, ...args);
           return meta.loading;
         };
-      }
+    }
 
-      class Actions {
+    class Actions {
         static _queryOrCreateBoilerplate = (...args) => {
           const stringHash = convertArgsToString(...args);
           if (!mapArgsToGenerated[stringHash]) {
@@ -101,14 +101,14 @@ const createFactoryMap = (injectReducer: Function) => {
         static reset = Actions._forwardActionForSubreducer('reset');
 
         static clearErrors = Actions._forwardActionForSubreducer('clearErrors');
-      }
+    }
 
-      return {
-        actions: Actions,
-        getters: Getters,
-      };
+    return {
+      actions: Actions,
+      getters: Getters,
     };
   };
+};
 
 export default createFactoryMap;
 

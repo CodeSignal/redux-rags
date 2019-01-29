@@ -1,6 +1,6 @@
 {
   "name": "redux-rags",
-  "version": "1.2.1-beta",
+  "version": "1.2.1-beta3",
   "description": "Redux Reducers, Actions, and Getters. Simplified!",
   "main": "build/index.js",
   "scripts": {
@@ -50,6 +50,7 @@
     "flow-bin": "^0.86.0",
     "jest": "^23.6.0",
     "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.1"
   }
 }
