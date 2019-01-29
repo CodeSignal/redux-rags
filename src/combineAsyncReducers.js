@@ -10,12 +10,11 @@ const recursivelyCombineAsyncReducers = function (combineReducers: Function, asy
   for (let prop of Object.getOwnPropertyNames(asyncReducers)) {
     const subreducer = asyncReducers[prop];
     if (typeof subreducer === 'object') {
-      recursivelyCombineAsyncReducers(combineReducers, subreducer);
+      reducers[prop] = recursivelyCombineAsyncReducers(combineReducers, subreducer);
     } else {
       reducers[prop] = subreducer;
     }
   }
-
   return combineReducers(reducers);
 };
 
