@@ -12,7 +12,7 @@ function configureRags(store: *, createRootReducer: *) {
   injectReducer = makeReducerInjector(store, createRootReducer);
   ragFactory = createFactory(injectReducer);
   ragFactoryMap = createFactoryMap(injectReducer);
-};
+}
 
 export {
   combineAsyncReducers,

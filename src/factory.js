@@ -24,6 +24,8 @@ type ConfigType<T, G> = {
   update?: (data: ?T, *) => ?T | Promise<?T>,
   getInStore?: (store: Object) => BoilerState<T>,
   getInitialState?: () => T,
+  // Options
+  loadOnlyOnce?: ?boolean,
 };
 
 type ReturnType<T, G: Array<mixed>> = {
@@ -75,6 +77,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
   const {
     name = '',
     load,
+    loadOnlyOnce,
     getInStore,
     getInitialState,
     update,
@@ -165,10 +168,17 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     };
 
     static load = (...args: G) => async (
-      dispatch: Dispatch
+      dispatch: Dispatch,
+      getState: () => Object
     ): Promise<?T> => {
       if (!load) {
         return null;
+      }
+      if (loadOnlyOnce) {
+        const state = Getters.get(getState());
+        if (state && state.meta.loaded) {
+          return state.data;
+        }
       }
       dispatch(Actions.beginLoading());
       try {
