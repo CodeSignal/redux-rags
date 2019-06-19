@@ -97,7 +97,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     static getData = (reduxStore: Object): $PropertyType<BoilerState<T>, 'data'> => {
       const state = Getters.get(reduxStore);
       if (!state.hasOwnProperty('data')) {
-        warning(`redux-rags: getData failed to find the property \'data\' on the object returned by Getters.get.
+        warning(`redux-rags: getData failed to find the property 'data' on the object returned by Getters.get.
         This is likely caused by providing an incorrect 'getInStore' configuration option.`);
       }
       return state.data;
@@ -106,7 +106,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     static getMeta = (reduxStore: Object): $PropertyType<BoilerState<T>, 'meta'> => {
       const state = Getters.get(reduxStore);
       if (!state.hasOwnProperty('meta')) {
-        warning(`redux-rags: getData failed to find the property \'meta\' on the object returned by Getters.get.
+        warning(`redux-rags: getData failed to find the property 'meta' on the object returned by Getters.get.
         This is likely caused by providing an incorrect 'getInStore' configuration option.`);
       }
       return state.meta;
@@ -202,6 +202,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     | ExtractReturn<typeof Actions.clearErrors>
     | ExtractReturn<typeof Actions.updateData>
     | ExtractReturn<typeof Actions.endLoading>;
+
   class Subreducer {
     static partialReducer = partialReducer;
 
@@ -236,7 +237,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
           return (Getters.getInitialState(): BoilerState<T>);
         default:
           if (typeof Subreducer.partialReducer === 'function') {
-            return {...state, ...(Subreducer.partialReducer(state, action) || {})};
+            return { ...state, ...(Subreducer.partialReducer(state, action) || {}) };
           }
           return state;
       }
