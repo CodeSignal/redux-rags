@@ -16,7 +16,9 @@ describe('noConfigurationWarning', () => {
   });
 
   afterAll(() => {
-    process.env.NODE_ENV = _NODE_ENV;
+    if (_NODE_ENV) {
+      process.env.NODE_ENV = _NODE_ENV;
+    }
   });
 
   it('calls warning when env is not production', () => {
