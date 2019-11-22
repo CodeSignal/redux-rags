@@ -140,7 +140,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
       payload: null,
     });
 
-    static errors = (errors: Object | String) => ({
+    static errors = (errors: T) => ({
       type: ERRORS,
       payload: errors,
     });
