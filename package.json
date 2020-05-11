@@ -9,7 +9,7 @@
     "lint:watch": "esw -w lib/**",
     "prepublish": "npm run build",
     "flow": "flow",
-    "test": "npm run jest -- --coverage --coverageReporters=text-lcov | ./node_modules/coveralls/bin/coveralls.js",
+    "test": "npm run jest",
     "jest": "./node_modules/.bin/jest --maxWorkers=2",
     "jest:watch": "npm run jest -- --watchAll"
   },
@@ -43,12 +43,11 @@
     "babel-jest": "^26.0.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "babel-polyfill": "^6.26.0",
-    "coveralls": "^3.0.8",
     "eslint": "^6.7.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-watch": "^6.0.1",
     "flow-bin": "^0.124.0",
-    "jest": "^25.2.1",
+    "jest": "^26.0.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.3"

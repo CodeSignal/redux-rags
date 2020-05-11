@@ -8,7 +8,7 @@ import { combineAsyncReducers, configureRags, ragFactory, ragFactoryMap } from '
 
 describe('integration test', () => {
   // Initializing the redux store.
-  const createRootReducer = (dynamicReducers: Object = {}) => {
+  const createRootReducer = (dynamicReducers: Object = { root: state => state ?? null }) => {
     dynamicReducers = combineAsyncReducers(combineReducers, dynamicReducers);
 
     return combineReducers(Object.assign({}, dynamicReducers, {
