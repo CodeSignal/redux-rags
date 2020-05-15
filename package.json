@@ -46,7 +46,7 @@
     "eslint": "^6.7.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-watch": "^6.0.1",
-    "flow-bin": "^0.124.0",
+    "flow-bin": "^0.125.0",
     "jest": "^26.0.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
