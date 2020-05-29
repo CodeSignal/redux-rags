@@ -45,7 +45,7 @@
     "babel-polyfill": "^6.26.0",
     "eslint": "^7.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-watch": "^6.0.1",
+    "eslint-watch": "^7.0.0",
     "flow-bin": "^0.125.1",
     "jest": "^26.0.1",
     "redux": "^4.0.4",
