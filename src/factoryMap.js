@@ -27,15 +27,17 @@ type ReturnType<T, G: Array<mixed>> = {
   },
 };
 
+type FactoryMapGetter<T, G> = ConfigType<T, G> => ReturnType<T, G>;
+
 const prefix = '@@redux-rags/map';
 
 let generatedCount = 0;
 
 const convertArgsToString = (...args) => JSON.stringify(args);
 
-const createFactoryMap = (injectReducer: Function) => {
+const createFactoryMap = <T, G: Array<mixed>>(injectReducer: Function): FactoryMapGetter<T, G> => {
   const factory = createFactory(injectReducer);
-  return <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
+  return (config: ConfigType<T, G>): ReturnType<T, G> => {
     const { name = '', load, getInitialState } = config;
     generatedCount += 1;
 

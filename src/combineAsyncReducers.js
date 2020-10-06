@@ -18,7 +18,7 @@ const recursivelyCombineAsyncReducers = function (combineReducers: Function, asy
   return combineReducers(reducers);
 };
 
-const combineAsyncReducers = function (combineReducers: Function, asyncReducers: Function | Object) {
+const combineAsyncReducers = function (combineReducers: Function, asyncReducers: Function | Object): Function | Object {
   const newAsyncReducers = Object.getOwnPropertyNames(asyncReducers).reduce(
     (reducers, key) => {
       reducers[key] = recursivelyCombineAsyncReducers(combineReducers, asyncReducers[key]);

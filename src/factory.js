@@ -1,6 +1,6 @@
 // @flow
 import warning from './utils/warning';
-import { type Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 
 export type BoilerState<T> = {
   data: ?T,
@@ -47,6 +47,8 @@ type ReturnType<T, G: Array<mixed>> = {
   },
 };
 
+type FactoryMapGetter<T, G> = ConfigType<T, G> => ReturnType<T, G>;
+
 let generatedCount = 0;
 const prefix = '@@redux-rags';
 type LoadingEnum = 'loading';
@@ -62,7 +64,7 @@ const getErrorsType = (name): ErrorsEnum => (`${prefix}/${generatedCount}/${name
 const getUpdateType = (name): UpdateEnum => (`${prefix}/${generatedCount}/${name}: update`: any);
 const getResetType = (name): ResetEnum => (`${prefix}/${generatedCount}/${name}: reset`: any);
 
-export const createGetInitialState = (getInitialState: *) => (): BoilerState<any> => ({
+export const createGetInitialState = (getInitialState: *): () => BoilerState<any> => (): BoilerState<any> => ({
   data: typeof getInitialState === 'function' ? getInitialState() : null,
   meta: {
     loaded: false,
@@ -73,7 +75,7 @@ export const createGetInitialState = (getInitialState: *) => (): BoilerState<any
   },
 });
 
-const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: ConfigType<T, G>): ReturnType<T, G> => {
+const createFactory = <T, G: Array<mixed>>(injectReducer: Function): FactoryMapGetter<T, G> => (config: ConfigType<T, G>): ReturnType<T, G> => {
   const {
     name = '',
     load,
@@ -168,7 +170,7 @@ const createFactory = (injectReducer: Function) => <T, G: Array<mixed>>(config: 
     };
 
     static load = (...args: G) => async (
-      dispatch: Dispatch,
+      dispatch: typeof Dispatch,
       getState: () => Object
     ): Promise<?T> => {
       if (!load) {

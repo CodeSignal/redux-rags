@@ -53,7 +53,7 @@ describe('factoryOptions', () => {
   });
 
   describe('loadOnlyOnce', () => {
-    const load = jest.fn().mockReturnValue(5);
+    const load = jest.fn().mockResolvedValue(5);
     const name = 'LOAD_ONCE_TEST';
 
     const getInStore = x => x;
@@ -127,7 +127,7 @@ describe('factoryOptions', () => {
 
   describe('partialReducer', () => {
     describe('on initial creation', () => {
-      const load = jest.fn().mockReturnValue(5);
+      const load = jest.fn().mockResolvedValue(5);
       const name = 'PARTIAL_REDUCER_TEST';
 
       const getInStore = x => x;
