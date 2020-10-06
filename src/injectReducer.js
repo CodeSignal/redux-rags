@@ -12,10 +12,12 @@ function replaceAsyncReducers(reducers: Object, keys: Array<string>, reducer: Fu
   }
   let nextReducers = reducers[key];
   replaceAsyncReducers(nextReducers, keys, reducer);
-};
+}
+
+type ReducerInjector = (Array<string>, *) => void;
 
 const dynamicReducers = {};
-const makeReducerInjector = (store: { replaceReducer: Function }, createRootReducer: Function) => (keys: Array<string>, reducer: *) => {
+const makeReducerInjector = (store: { replaceReducer: Function }, createRootReducer: Function): ReducerInjector => (keys: Array<string>, reducer: *) => {
   replaceAsyncReducers(dynamicReducers, keys, reducer);
   store.replaceReducer(createRootReducer(dynamicReducers));
 };
