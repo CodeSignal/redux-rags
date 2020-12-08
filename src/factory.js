@@ -64,7 +64,7 @@ const getErrorsType = (name): ErrorsEnum => (`${prefix}/${generatedCount}/${name
 const getUpdateType = (name): UpdateEnum => (`${prefix}/${generatedCount}/${name}: update`: any);
 const getResetType = (name): ResetEnum => (`${prefix}/${generatedCount}/${name}: reset`: any);
 
-export const createGetInitialState = (getInitialState: *): () => BoilerState<any> => (): BoilerState<any> => ({
+export const createGetInitialState = (getInitialState: ?() => mixed): () => BoilerState<any> => (): BoilerState<any> => ({
   data: typeof getInitialState === 'function' ? getInitialState() : null,
   meta: {
     loaded: false,
