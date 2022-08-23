@@ -3,6 +3,9 @@
 [![npm downloads](https://img.shields.io/npm/dm/redux-rags.svg?style=flat-square)](https://www.npmjs.com/package/redux-rags)
 [![Coverage Status](https://coveralls.io/repos/github/CodeSignal/redux-rags/badge.svg?branch=master)](https://coveralls.io/github/CodeSignal/redux-rags?branch=master)
 
+> :warning: **This package is not maintained**: It has been archived. You are welcome to read it or even fork it, but it will not be updated going forward.
+
+
 Redux **R**educers, **A**ctions, and **G**etters: Simplified!
 
 TLDR: No need to create or connect subreducers for simple async requests. Your Redux connection is handled by a single function
